@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         return key;
       };
   
-      let images = [];
+      const images = [];
       if (ad.images && Array.isArray(ad.images)) {
         for (const imageUrl of ad.images) {
           const key = extractKeyFromUrl(imageUrl);

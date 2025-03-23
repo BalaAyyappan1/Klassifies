@@ -8,7 +8,7 @@ import { getFromR2 } from "@/lib/r2";
 
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
 
-export async function GET(req: NextRequest, { params }: { params: { userId: string } }) {
+export async function GET() {
   try {
     await connectDB();
 

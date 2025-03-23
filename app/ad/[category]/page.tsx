@@ -41,21 +41,6 @@ interface Ad {
 const Page = () => {
   const params = useParams();
   const { category } = params;
-
-  const selectedCategory = categoryData.mainCategories.find(
-    (cat) => slugify(cat.name) === category
-  );
-
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  const [setSelectedSubSubcategory] = useState(null);
-  const [ads, setAds] = useState<Ad[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-
   useEffect(() => {
     const authenticate = async () => {
       try {
@@ -72,6 +57,22 @@ const Page = () => {
 
     authenticate();
   }, []);
+  
+  const selectedCategory = categoryData.mainCategories.find(
+    (cat) => slugify(cat.name) === category
+  );
+
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [setSelectedSubSubcategory] = useState(null);
+  const [ads, setAds] = useState<Ad[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+
 
   // Handle case when category is not found
   if (!selectedCategory) {

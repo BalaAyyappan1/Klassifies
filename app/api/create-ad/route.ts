@@ -60,9 +60,9 @@ export async function POST(req: NextRequest) {
       const formDataToSend = new FormData();
       formDataToSend.append("data", JSON.stringify({ ...body, location: locationData }));
 
-      for (let [key, value] of formDataToSend.entries()) {
-        console.log(key, value);
-      }
+      // for (let [key, value] of formDataToSend.entries()) {
+      //   console.log(key, value);
+      // }
 
       const newAd = new Ad({
         userId: decoded.userId,

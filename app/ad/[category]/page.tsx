@@ -62,20 +62,8 @@ const Page = () => {
     (cat) => slugify(cat.name) === category
   );
 
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  const [setSelectedSubSubcategory] = useState(null);
-  const [ads, setAds] = useState<Ad[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-
-
-
-  // Handle case when category is not found
-  if (!selectedCategory) {
+   // Handle case when category is not found
+   if (!selectedCategory) {
     return (
       <Layout>
         <div className="text-center mt-10">
@@ -88,6 +76,20 @@ const Page = () => {
       </Layout>
     );
   }
+
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [setSelectedSubSubcategory] = useState(null);
+  const [ads, setAds] = useState<Ad[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+
+
+ 
   const handleSubcategoryClick = (subcategory) => {
     setSelectedSubcategory(subcategory);
     setSelectedSubSubcategory(null);

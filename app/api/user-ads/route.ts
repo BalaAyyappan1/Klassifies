@@ -1,6 +1,6 @@
 import connectDB from "@/lib/db";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import Ad from "@/models/ad";
 import User from "@/models/user";

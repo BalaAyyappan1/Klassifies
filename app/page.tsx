@@ -47,7 +47,6 @@ const page = () => {
   
   return (
     <div >
-      <DisplayTopBar />
       <Layout>
       <div className="p-3">
       <main className="p-3 space-y-10">

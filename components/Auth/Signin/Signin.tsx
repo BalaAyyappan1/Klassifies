@@ -36,8 +36,7 @@ const Signin: React.FC = () => {
     };
 
     return (
-        <div>
-            <div className="flex flex-grow flex-col space-y-5 p-5 dark:bg-[#1e1e1e]">
+            <div className="flex flex-grow flex-col space-y-5 p-5 dark:bg-[#1e1e1e] ">
 
                 <div className="text-center space-y-2">
                     <h2 className="text-2xl font-bold leading-[24.72px]">
@@ -113,8 +112,6 @@ const Signin: React.FC = () => {
 
                 </div>
             </div>
-
-        </div>
     );
 };
 

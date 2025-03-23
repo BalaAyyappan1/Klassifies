@@ -9,7 +9,7 @@ export interface IAds extends Document {
   description: string;
   mainCategory: MainCategory; 
   subCategory: Subcategory; 
-  subCategory2: Subcategory2;
+  subCategory2: Subcategory2; 
 
   images?: string;
   mobile: string;

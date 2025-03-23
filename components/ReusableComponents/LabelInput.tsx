@@ -25,7 +25,7 @@ const LabelInput: React.FC<LabelInputProps> = ({
   name = '',
   disabled = false,
   errorMessage = '',
-  className = '', // Default value as empty string
+  className = '',
 }) => {
   return (
     <div className={`mb-4 ${className}`}>

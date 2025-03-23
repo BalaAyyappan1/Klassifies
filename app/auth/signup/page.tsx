@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { FaArrowLeft as BackIcon } from "react-icons/fa6";
+import Layout from "@/components/ReusableComponents/Layout";
 const SignupPage = () => {
   const [step, setStep] = useState(1);
   const [userData, setUserData] = useState({
@@ -56,7 +57,8 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-[#181818]">
+    <Layout>
+    <div className="h-screen flex items-center justify-center bg-gray-100 dark:bg-[#181818]">
       <div className="w-[444px] max-w-md bg-white shadow-md rounded-[20px] p-6 dark:bg-[#1e1e1e] dark:text-white">
         {step !== 1 && (
           <div className="flex justify-start mb-4">
@@ -95,6 +97,8 @@ const SignupPage = () => {
 
       </div>
     </div>
+    </Layout>
+
   );
 };
 

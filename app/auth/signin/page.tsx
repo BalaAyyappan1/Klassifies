@@ -7,8 +7,8 @@ const page = () => {
   return (
     <div>
       <Layout>
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-[#181818]">
-          <div className="w-[444px]  max-w-md bg-white shadow-md rounded-[20px] p-6 dark:bg-[#1e1e1e] dark:text-white">
+        <div className=" flex items-center justify-center bg-gray-100 dark:bg-[#181818] h-screen">
+          <div className="w-[444px]  max-w-md bg-white shadow-md rounded-[20px] p-6 dark:bg-[#1e1e1e]  dark:text-white">
 
             <Signin />
 

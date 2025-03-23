@@ -29,33 +29,94 @@ export const uploadToR2 = async (key: string, file: Buffer | Uint8Array | Blob |
 };
 
 
+export const uploadMultipleToR2 = async (files: { key: string; file: Buffer | Uint8Array | Blob | string; mimeType: string }[]) => {
+  try {
+    const uploadPromises = files.map(({ key, file, mimeType }) => uploadToR2(key, file, mimeType));
+    const urls = await Promise.all(uploadPromises);
+    return urls; // Returns an array of uploaded file URLs
+  } catch (error) {
+    console.error("Error uploading multiple files to R2:", error);
+    throw new Error("Failed to upload multiple files to R2.");
+  }
+};
+
+
   
 // Function to fetch a file and convert stream to a Buffer
-export const getFromR2 = async (key: string): Promise<Buffer> => {
+// export const getFromR2 = async (key: string): Promise<Buffer> => {
+//   try {
+//     console.log('Key being passed to R2:', key);
+//     const command = new GetObjectCommand({
+//       Bucket: process.env.R2_BUCKET_NAME!,
+//       Key: key,
+//     });
+
+//     const response = await r2Client.send(command);
+
+//     const stream = response.Body as Readable;
+//     // Convert stream to Buffer
+//     const chunks: Buffer[] = [];
+//     for await (const chunk of stream) {
+//       chunks.push(chunk);
+//     }
+
+//     // Return the full buffer
+//     return Buffer.concat(chunks);
+//   } catch (error) {
+//     console.error('Error fetching from R2:', error);
+//     throw error;
+//   }
+// };
+export const getFromR2 = async (key: string | string[]): Promise<Buffer | Buffer[]> => {
   try {
-    console.log('Key being passed to R2:', key);
+    console.log("Keys being passed to getFromR2:", key); // Log the keys being passed
+
+    // If the key is an array, fetch all images and return an array of Buffers
+    if (Array.isArray(key)) {
+      const buffers = await Promise.all(
+        key.map(async (k) => {
+          console.log("Processing key:", k); // Log each individual key being processed
+
+          const command = new GetObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME!,
+            Key: k,
+          });
+
+          const response = await r2Client.send(command);
+          const stream = response.Body as Readable;
+
+          // Convert stream to Buffer
+          const chunks: Buffer[] = [];
+          for await (const chunk of stream) {
+            chunks.push(chunk);
+          }
+
+          return Buffer.concat(chunks);
+        })
+      );
+
+      return buffers;
+    }
     const command = new GetObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME!,
       Key: key,
     });
 
     const response = await r2Client.send(command);
-
     const stream = response.Body as Readable;
+
     // Convert stream to Buffer
     const chunks: Buffer[] = [];
     for await (const chunk of stream) {
       chunks.push(chunk);
     }
 
-    // Return the full buffer
     return Buffer.concat(chunks);
   } catch (error) {
     console.error('Error fetching from R2:', error);
     throw error;
   }
 };
-
 // Function to delete a file from Cloudflare R2 (optional, if you need to delete files)
 export const deleteFromR2 = async (key: string): Promise<void> => {
   try {

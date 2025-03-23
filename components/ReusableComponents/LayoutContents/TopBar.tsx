@@ -7,6 +7,7 @@ import { FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
 import { categoryData } from "@/Data/Categories";
 import { slugify } from "@/utils/slugify";
 import { checkAuthStatus, fetchUserInfo } from "@/components/Api/Api";
+import DisplayTopBar from "@/components/Admin/TopBar/DisplayTopBar";
 
 const TopBar: React.FC = () => {
   const [searchBar, setSearchBar] = useState("");
@@ -47,6 +48,8 @@ const TopBar: React.FC = () => {
 
   return (
     <div>
+      <DisplayTopBar />
+
       <div className="flex items-center border-b dark:border-[#333333] py-4 px-5 justify-between">
         {/* Logo Section */}
         <div>
@@ -56,7 +59,7 @@ const TopBar: React.FC = () => {
         </div>
 
         {/* Search Bar Section */}
-        <div className="relative w-full max-w-md flex-grow">
+        <div className="relative w-full max-w-md flex-grow hidden sm:block md:block">
           <LabelInput
             type="text"
             placeholder="Search..."
@@ -97,20 +100,20 @@ const TopBar: React.FC = () => {
                         height={35}
                         className="rounded-full"
                       />
- </Link>
-                      <div className="flex flex-col items-center space-y-2">
+                    </Link>
+                    <div className="flex flex-col items-center space-y-2">
                       <Link href={"/profile"}>
-                        <span className="text-gray-700">{userData.name}</span>
-                        </Link>
-                        <Link href="/create-ad">
-                <span className="font-medium text-blue-800">Create Ad</span>
-              </Link>
-                      </div>
-                   
+                        <span className="text-black dark:text-white">{userData.name}</span>
+                      </Link>
+                      <Link href="/create-ad">
+                        <span className="font-medium text-blue-800">
+                          Create Ad
+                        </span>
+                      </Link>
+                    </div>
                   </div>
                 </>
               )}
-              
             </div>
           )}
         </div>
@@ -125,7 +128,7 @@ const TopBar: React.FC = () => {
         />
         <div
           ref={scrollContainerRef}
-          className="flex flex-row overflow-x-auto overflow-hidden no-scrollbar space-x-5 p-4"
+          className="flex flex-row overflow-x-auto overflow-hidden no-scrollbar space-x-5 p-2"
         >
           {categoryData.mainCategories.map((category) => (
             <Link
@@ -133,7 +136,7 @@ const TopBar: React.FC = () => {
               href={`/ad/${slugify(category.name)}`}
               passHref
             >
-              <div className="flex-shrink-0 rounded-lg p-1 transform transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis">
+              <div className="flex-shrink-0 rounded-lg p-1 transform transition-all duration-300 hover:scale-105  cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis">
                 <div className="font-medium text-sm text-center">
                   {category.name}
                 </div>

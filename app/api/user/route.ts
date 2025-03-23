@@ -33,9 +33,6 @@ export async function GET(req: NextResponse) {
       };
 
 
-
-      
-
       // Find user
       const user = await User.findOne({ email: decoded.email }).select(
         "name email phoneNumber role isBlocked isVerified profile ipAddress location createdAt updatedAt"
@@ -59,21 +56,20 @@ export async function GET(req: NextResponse) {
         { expiresIn: "15m" }
       );
 
-      //   const extractKeyFromUrl = (url: string | URL) => {
-      //     const urlObj = new URL(url);
-      //     const pathname = urlObj.pathname.slice(1);
-      //     const bucketName = process.env.R2_BUCKET_NAME;
-      //     const key = pathname.replace(`${bucketName}/`, "");
-      //     return key;
-      //   };
+        const extractKeyFromUrl = (url: string | URL) => {
+          const urlObj = new URL(url);
+          const pathname = urlObj.pathname.slice(1);
+          const bucketName = process.env.R2_BUCKET_NAME;
+          const key = pathname.replace(`${bucketName}/`, "");
+          return key;
+        };
 
-      //   let profile = null;
-      //   if (user.companyLogo) {
-      //     const key = extractKeyFromUrl(user.companyLogo);
-      //     profile = await getFromR2(key);
-      //   }
+        let profile = null;
+        if (user.profile) {
+          const key = extractKeyFromUrl(user.profile);
+          profile = await getFromR2(key);
+        }
 
-      //   console.log("Profile:", profile);
 
       // Create response with user data
       const response = NextResponse.json(
@@ -85,7 +81,7 @@ export async function GET(req: NextResponse) {
             isVerified: user.isVerified,
             isBlocked: user.isBlocked,
             role: user.role,
-            profile: user.profile,
+            profile: profile,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
           },

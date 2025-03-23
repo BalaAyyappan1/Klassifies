@@ -29,7 +29,7 @@ const Signin: React.FC = () => {
             const response = await handleLogin(email, password);
             router.push("/");
             console.log(response.data);
-          } catch (error) {
+          } catch {
             setEmailError("Failed to sign in"); // Handle error appropriately
           }
         }
@@ -91,7 +91,7 @@ const Signin: React.FC = () => {
 
                     <Link href="/auth/signup">
                         <div className="text-center">
-                            <span>Don't have an account? </span>
+                            <span>Don&apos;t have an account? </span>
                             <span className="font-medium">Signup here</span>
                         </div>
                     </Link>

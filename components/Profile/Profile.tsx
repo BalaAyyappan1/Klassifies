@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { checkAuthStatus, fetchUserInfo } from "@/components/Api/Api";
 import Link from "next/link";
 import { DefaultProfile } from "../ReusableComponents/Icons";

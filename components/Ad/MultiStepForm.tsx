@@ -3,7 +3,7 @@
   import React, { useState } from "react";
   import axios from "axios";
   import LabelInput from "../ReusableComponents/LabelInput";
-  import { Button } from "../ui/button";
+
   import { categoryData } from "@/Data/Categories";
   import { MainCategory, Subcategory, Subcategory2 } from "@/types/categories";
   import { ImageUploadIcon } from "../ReusableComponents/Icons";
@@ -33,7 +33,6 @@ import { toast, ToastContainer } from "react-toastify";
     const [autoFilled, setAutoFilled] = useState(false);
     const [subCategories, setSubCategories] = useState<Subcategory[]>([]);
     const [subCategories2, setSubCategories2] = useState<Subcategory2[]>([]);
-    const [selectedImages, setSelectedImages] = useState<File[]>([]); // State to hold selected images
     const [formData, setFormData] = useState<FormData>({
       title: "",
       description: "",

@@ -4,9 +4,7 @@ import axios from "axios";
 
 const TitleDescriptionStep: React.FC = () => {
 
-    const getMainCategories = (categories: { id: number; name: string }[]) => {
-        return categories.map((category) => category.name);
-      };
+
 
 
       const [title, setTitle] = useState("");
@@ -59,7 +57,7 @@ const TitleDescriptionStep: React.FC = () => {
     }));
 
     try {
-      const res = await axios.post("/api/create-ad", formData, {
+       await axios.post("/api/create-ad", formData, {
         withCredentials: true, // This ensures the cookies are sent with the request
       });
   

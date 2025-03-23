@@ -47,19 +47,14 @@ const Page = () => {
   );
 
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  const [selectedSubSubcategory, setSelectedSubSubcategory] = useState(null);
-  const [ads, setAds] = useState<Ad[]>([]); // State to hold ads
-  const [loading, setLoading] = useState(false); // State to manage loading
-  const [selectedAd, setSelectedAd] = useState<Ad | null>(null); // State for selected ad
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [setSelectedSubSubcategory] = useState(null);
+  const [ads, setAds] = useState<Ad[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-
-  const [userData, setUserData] = useState<{
-    name: string;
-    profile: string;
-  } | null>(null);
 
   useEffect(() => {
     const authenticate = async () => {
@@ -69,7 +64,6 @@ const Page = () => {
         if (isAuth) {
           const userInfo = await fetchUserInfo();
           console.log(userInfo);
-          setUserData(userInfo);
         }
       } catch (error) {
         console.error("Authentication or user fetch error:", error);
@@ -79,11 +73,6 @@ const Page = () => {
     authenticate();
   }, []);
 
-  const handleMobileClick = () => {
-    if (!isAuthenticated) {
-      setShowLoginPrompt(true);
-    }
-  };
   // Handle case when category is not found
   if (!selectedCategory) {
     return (
@@ -292,33 +281,39 @@ const Page = () => {
 
       {/* Custom Modal for displaying full ad details */}
       {isModalOpen && (
-    <div className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-50 z-50">
-        <div className="bg-white  p-6 w-11/12 max-w-lg relative rounded-[13px]">
+        <div className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-50 z-50">
+          <div className="bg-white  p-6 w-11/12 max-w-lg relative rounded-[13px]">
             {/* Close Button */}
-            <button 
-                onClick={closeModal} 
-                className="absolute top-1 right-1 text-gray-500 hover:text-gray-700 transition-colors"
+            <button
+              onClick={closeModal}
+              className="absolute top-1 right-1 text-gray-500 hover:text-gray-700 transition-colors"
             >
-                <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="h-6 w-6" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
             </button>
 
             {selectedAd && (
               <>
                 {selectedAd.images.length > 0 && (
                   <div className="relative mt-4">
-                    <img
+                    <Image
                       src={selectedAd.images[currentImageIndex]}
+                      width={100}
+                      height={100}
                       alt={selectedAd.title}
-                 
-className="w-full h-64 object-cover rounded-[10px]"
+                      className="w-full h-64 object-cover rounded-[10px]"
                     />
                     <button
                       onClick={prevImage}
@@ -351,59 +346,66 @@ className="w-full h-64 object-cover rounded-[10px]"
                 <p className="text-gray-700">{selectedAd.address}</p>
                 <p className="text-gray-700">{selectedAd.city}</p>
                 <p className="text-gray-700">{selectedAd.state}</p>
-
                 <div className="pt-2">
-                            {isAuthenticated ? (
-                                <p className="text-gray-700">{selectedAd.mobile}</p>
-                            ) : (
-                                <div>
-                                    {showLoginPrompt ? (
-                                        <Link
-                                            href="/auth/signin"
-                                            className="inline-block px-4 py-2 bg-blue-500 text-white rounded-[12px] hover:bg-blue-600 transition-all 
+                  {isAuthenticated ? (
+                    <p className="text-gray-700">{selectedAd.mobile}</p>
+                  ) : (
+                    <div>
+                      {showLoginPrompt ? (
+                        <Link
+                          href="/auth/signin"
+                          className="inline-block px-4 py-2 bg-blue-500 text-white rounded-[12px] hover:bg-blue-600 transition-all 
                                                         transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg animate-pulse"
-                                        >
-                                            <span className="flex items-center space-x-2">
-                                                <svg 
-                                                    xmlns="http://www.w3.org/2000/svg" 
-                                                    className="h-5 w-5 animate-bounce" 
-                                                    viewBox="0 0 20 20" 
-                                                    fill="currentColor"
-                                                >
-                                                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                                </svg>
-                                                <span>Login to View Number</span>
-                                            </span>
-                                        </Link>
-                                    ) : (
-                                        <div
-                                            className="blur-sm cursor-pointer select-none"
-                                            onClick={() => setShowLoginPrompt(true)}
-                                        >
-                                            <span className="inline-block bg-gray-200 px-2 py-1 rounded">
-                                                Click to Reveal
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>                <div className="flex items-center justify-between space-x-3 pt-3 mt-5">
-                            <div className="flex flex-row items-center mr-2">
-                            <img 
-                                src={placeholder.src} 
-                                alt={"Default User"} 
-                                className="w-10 h-10 rounded-full" 
-                            />
-                             <p className="font-medium text-gray-800">{selectedAd?.userProfile.name || "Unknown User"}</p>
-                            </div>
-                           
-                            <div>
-                               
-                                <p className="text-sm text-gray-500">{timeAgo(selectedAd.createdAd)}</p>
-                            </div>
+                        >
+                          <span className="flex items-center space-x-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-5 w-5 animate-bounce"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span>Login to View Number</span>
+                          </span>
+                        </Link>
+                      ) : (
+                        <div
+                          className="blur-sm cursor-pointer select-none"
+                          onClick={() => setShowLoginPrompt(true)}
+                        >
+                          <span className="inline-block bg-gray-200 px-2 py-1 rounded">
+                            Click to Reveal
+                          </span>
                         </div>
+                      )}
+                    </div>
+                  )}
+                </div>{" "}
+                <div className="flex items-center justify-between space-x-3 pt-3 mt-5">
+                  <div className="flex flex-row items-center mr-2">
+                    <Image
+                      src={placeholder.src}
+                      alt={"Default User"}
+                      width={100}
+                      height={100}
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <p className="font-medium text-gray-800">
+                      {selectedAd?.userProfile.name || "Unknown User"}
+                    </p>
+                  </div>
 
-                
+                  <div>
+                    <p className="text-sm text-gray-500">
+                      {timeAgo(selectedAd.createdAd)}
+                    </p>
+                  </div>
+                </div>
               </>
             )}
           </div>

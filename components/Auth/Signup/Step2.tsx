@@ -10,7 +10,7 @@ interface Step2Props {
   onContinue: (email: string, password: string) => void;
 }
 
-const Step2: React.FC<Step2Props> = ({ name, phone, onContinue }) => {
+const Step2: React.FC<Step2Props> = ({  onContinue }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorEmail, setEmailError] = useState("");

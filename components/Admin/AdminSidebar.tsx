@@ -3,7 +3,7 @@ import { NavContents } from './NavContent';
 import { usePathname } from "next/navigation";
 import Link from 'next/link';
 ``
-const AdminSidebar: React.FC = () => {
+const AdminSidebar = () => {
   const pathname = usePathname();
 
     return (

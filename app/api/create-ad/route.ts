@@ -2,7 +2,7 @@ import connectDB from "@/lib/db";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { uploadMultipleToR2, uploadToR2 } from "@/lib/r2";
+import { uploadMultipleToR2} from "@/lib/r2";
 import Ad from "@/models/ad";
 
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;

@@ -9,7 +9,7 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string;
 
 
-export async function GET(req: NextResponse) {
+export async function GET() {
   try {
     // Connect to the database
     await connectDB();

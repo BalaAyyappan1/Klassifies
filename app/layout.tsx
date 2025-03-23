@@ -24,26 +24,26 @@ const mont = localFont({
   variable: "--font-mont",
 });
 
-const jet = localFont({
-  src: [
-    {
-      path: "../fonts/Jet/JetBrainsMono-Regular.ttf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../fonts/Jet/JetBrainsMono-Medium.ttf",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "../fonts/Jet/JetBrainsMono-Bold.ttf",
-      weight: "700",
-      style: "normal",
-    },
-  ],
-  variable: "--font-jet",
-});
+// const jet = localFont({
+//   src: [
+//     {
+//       path: "../fonts/Jet/JetBrainsMono-Regular.ttf",
+//       weight: "400",
+//       style: "normal",
+//     },
+//     {
+//       path: "../fonts/Jet/JetBrainsMono-Medium.ttf",
+//       weight: "500",
+//       style: "normal",
+//     },
+//     {
+//       path: "../fonts/Jet/JetBrainsMono-Bold.ttf",
+//       weight: "700",
+//       style: "normal",
+//     },
+//   ],
+//   variable: "--font-jet",
+// });
 
 export const metadata: Metadata = {
   title: "Klassifies",

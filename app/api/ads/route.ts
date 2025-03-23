@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Ad from "@/models/ad";
 import User from "@/models/user";
 import { getFromR2 } from "@/lib/r2";
-import { Buffer } from 'buffer';
+
 
 export async function POST(req: NextRequest) {
   try {

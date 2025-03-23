@@ -14,7 +14,7 @@ interface Step1Props {
   onContinue: (name: string, phone: string) => void;
 }
 
-const Step1: React.FC<Step1Props> = ({ name, phone, onContinue }) => {
+const Step1: React.FC<Step1Props> = ({ onContinue }) => {
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");

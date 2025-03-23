@@ -41,24 +41,14 @@ interface Ad {
 const Page = () => {
   const params = useParams();
   const { category } = params;
-
-   // Handle case when category is not found
-   if (!selectedCategory) {
-    return (
-      <Layout>
-        <div className="text-center mt-10">
-          <h2 className="text-xl font-bold">Category Not Found</h2>
-          <p className="text-gray-600">
-            The category you are looking for does not exist. Please check the
-            URL or return to the homepage.
-          </p>
-        </div>
-      </Layout>
-    );
-  }
+  
+  // Move this up before any conditional logic
+  const selectedCategory = categoryData.mainCategories.find(
+    (cat) => slugify(cat.name) === category
+  );
 
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  const [setSelectedSubSubcategory] = useState(null);
+  const [selectedSubSubcategory, setSelectedSubSubcategory] = useState(null);
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
@@ -84,12 +74,28 @@ const Page = () => {
     authenticate();
   }, []);
   
-  const selectedCategory = categoryData.mainCategories.find(
-    (cat) => slugify(cat.name) === category
-  );
+  // Reset the current image index when the selected ad changes
+  useEffect(() => {
+    if (selectedAd) {
+      setCurrentImageIndex(0);
+    }
+  }, [selectedAd]);
 
+  // Handle case when category is not found
+  if (!selectedCategory) {
+    return (
+      <Layout>
+        <div className="text-center mt-10">
+          <h2 className="text-xl font-bold">Category Not Found</h2>
+          <p className="text-gray-600">
+            The category you are looking for does not exist. Please check the
+            URL or return to the homepage.
+          </p>
+        </div>
+      </Layout>
+    );
+  }
 
- 
   const handleSubcategoryClick = (subcategory) => {
     setSelectedSubcategory(subcategory);
     setSelectedSubSubcategory(null);
@@ -174,13 +180,6 @@ const Page = () => {
         (selectedAd?.images.length || 1)
     );
   };
-
-  // Reset the current image index when the selected ad changes
-  useEffect(() => {
-    if (selectedAd) {
-      setCurrentImageIndex(0);
-    }
-  }, [selectedAd]);
 
   return (
     <div>

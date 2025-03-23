@@ -4,7 +4,7 @@ import User from "@/models/user";
 import OTP from "@/models/otp";
 import { sendEmailOtp } from "@/utils/sendEmailOtp";
 import { generateOtp } from "@/utils/generateOtp";
-import { sendWelcomeMail } from "@/utils/sendWelcomeMail";
+
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
@@ -202,7 +202,7 @@ export async function POST(req: NextRequest) {
       await OTP.deleteOne({ email, otp: emailOtp });
 
       // Send welcome email
-      await sendWelcomeMail(email, name);
+      
 
       return response;
     }

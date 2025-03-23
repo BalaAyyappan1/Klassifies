@@ -18,8 +18,8 @@ const AdsSchema = new Schema<IAds>({
     state: { type: String, required: true },
   
     location: {
-      type: { type: String, enum: ['Point'], required: false },
-      coordinates: { type: [Number], required: false } // Ensure this is set up correctly
+      type: { type: String, enum: ['Point'], default: 'Point' },
+      coordinates: { type: [Number], default: [0, 0] }
     },
     
     status: {
@@ -34,7 +34,8 @@ const AdsSchema = new Schema<IAds>({
     updatedAd: { type: Date, default: Date.now }
   });
   
-
+  AdsSchema.index({ "location": "2dsphere" });
+  
 const Ad = mongoose.models.Ad || mongoose.model<IAds>('Ad', AdsSchema);
 
 export default Ad;

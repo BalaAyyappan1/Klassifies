@@ -48,7 +48,7 @@ const Page = () => {
   );
 
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  const [ setSelectedSubSubcategory] = useState(null);
+  const [selectedSubSubcategory, setSelectedSubSubcategory] = useState(null);
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);

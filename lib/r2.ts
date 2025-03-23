@@ -203,3 +203,153 @@ export const downloadFromR2 = async (key: string): Promise<Blob> => {
     throw new Error('Failed to download file from R2.');
   }
 };
+
+// Video-specific functions
+
+/**
+ * Gets a video file from R2 storage
+ * Optimized for handling larger video files
+ */
+export const getVideoFromR2 = async (key: string): Promise<Buffer> => {
+  try {
+    console.log("Fetching video with key:", key);
+
+    const command = new GetObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME!,
+      Key: key,
+    });
+
+    const response = await r2Client.send(command);
+    const stream = response.Body as Readable;
+
+    // Use a more memory-efficient approach for potentially large video files
+    const chunks: Buffer[] = [];
+    let totalSize = 0;
+    
+    for await (const chunk of stream) {
+      chunks.push(chunk);
+      totalSize += chunk.length;
+    }
+
+    console.log(`Video fetched successfully: ${key}, size: ${totalSize/1024/1024} MB`);
+    return Buffer.concat(chunks);
+  } catch (error) {
+    console.error('Error fetching video from R2:', error);
+    throw error;
+  }
+};
+
+/**
+ * Determines the content type of a video based on its file extension
+ */
+export const getVideoContentType = (key: string): string => {
+  const extension = key.split('.').pop()?.toLowerCase();
+  
+  switch (extension) {
+    case 'mp4':
+      return 'video/mp4';
+    case 'webm':
+      return 'video/webm';
+    case 'mov':
+      return 'video/quicktime';
+    case 'avi':
+      return 'video/x-msvideo';
+    case 'mkv':
+      return 'video/x-matroska';
+    case 'flv':
+      return 'video/x-flv';
+    case 'wmv':
+      return 'video/x-ms-wmv';
+    case 'mpeg':
+    case 'mpg':
+      return 'video/mpeg';
+    case 'ts':
+      return 'video/mp2t';
+    case '3gp':
+      return 'video/3gpp';
+    case 'ogv':
+      return 'video/ogg';
+    default:
+      return 'video/mp4'; // Default to mp4 if unknown
+  }
+};
+
+/**
+ * Streams a video from R2 storage with support for range requests
+ * Returns the video buffer and metadata needed for proper HTTP responses
+ */
+export const streamVideoFromR2 = async (
+  key: string,
+  range?: string
+): Promise<{ buffer: Buffer; contentType: string; contentLength: number; contentRange?: string }> => {
+  try {
+    console.log(`Streaming video key: ${key}, Range: ${range || 'none'}`);
+    
+    // Get the object's metadata first to determine file size
+    const headCommand = new HeadObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME!,
+      Key: key,
+    });
+    
+    let totalSize = 0;
+    let rangeStart = 0;
+    let rangeEnd = 0;
+    let contentRange: string | undefined;
+    
+    try {
+      const headResponse = await r2Client.send(headCommand);
+      totalSize = headResponse.ContentLength || 0;
+      
+      // Process range header if provided
+      if (range && totalSize > 0) {
+        // Range header format: "bytes=start-end"
+        const match = range.match(/bytes=(\d+)-(\d*)/);
+        if (match) {
+          rangeStart = parseInt(match[1], 10);
+          rangeEnd = match[2] ? parseInt(match[2], 10) : totalSize - 1;
+          
+          // Ensure ranges are valid
+          rangeEnd = Math.min(rangeEnd, totalSize - 1);
+          
+          // Create content range header
+          contentRange = `bytes ${rangeStart}-${rangeEnd}/${totalSize}`;
+          console.log(`Serving range: ${contentRange}`);
+        }
+      }
+    } catch (error) {
+      console.warn('Error getting object metadata, proceeding with full download:', error);
+    }
+    
+    // Command for getting the object, potentially with range
+    const command = new GetObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME!,
+      Key: key,
+      ...(contentRange ? { Range: `bytes=${rangeStart}-${rangeEnd}` } : {}),
+    });
+
+    const response = await r2Client.send(command);
+    const stream = response.Body as Readable;
+    
+    // Determine content type
+    const contentType = response.ContentType || getVideoContentType(key);
+    
+    // Read the stream into a buffer
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream) {
+      chunks.push(chunk);
+    }
+    
+    const buffer = Buffer.concat(chunks);
+    console.log(`Video streaming completed: ${key}, chunk size: ${buffer.length/1024} KB`);
+    
+    return { 
+      buffer, 
+      contentType, 
+      contentLength: buffer.length,
+      contentRange
+    };
+  } catch (error) {
+    console.error('Error streaming video from R2:', error);
+    throw error;
+  }
+};

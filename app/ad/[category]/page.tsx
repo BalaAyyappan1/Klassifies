@@ -41,26 +41,6 @@ interface Ad {
 const Page = () => {
   const params = useParams();
   const { category } = params;
-  useEffect(() => {
-    const authenticate = async () => {
-      try {
-        const isAuth = await checkAuthStatus();
-        setIsAuthenticated(isAuth);
-        if (isAuth) {
-          const userInfo = await fetchUserInfo();
-          console.log(userInfo);
-        }
-      } catch (error) {
-        console.error("Authentication or user fetch error:", error);
-      }
-    };
-
-    authenticate();
-  }, []);
-  
-  const selectedCategory = categoryData.mainCategories.find(
-    (cat) => slugify(cat.name) === category
-  );
 
    // Handle case when category is not found
    if (!selectedCategory) {
@@ -87,6 +67,26 @@ const Page = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
+  useEffect(() => {
+    const authenticate = async () => {
+      try {
+        const isAuth = await checkAuthStatus();
+        setIsAuthenticated(isAuth);
+        if (isAuth) {
+          const userInfo = await fetchUserInfo();
+          console.log(userInfo);
+        }
+      } catch (error) {
+        console.error("Authentication or user fetch error:", error);
+      }
+    };
+
+    authenticate();
+  }, []);
+  
+  const selectedCategory = categoryData.mainCategories.find(
+    (cat) => slugify(cat.name) === category
+  );
 
 
  

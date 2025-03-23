@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
       const locationData = {
         type: "Point",
-        coordinates: [body.longitude, body.latitude] // Ensure correct order
+        coordinates: [body.longitude, body.latitude] 
       };
 
       const formDataToSend = new FormData();

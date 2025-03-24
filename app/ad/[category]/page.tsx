@@ -26,7 +26,7 @@ interface Ad {
   city: string;
   pincode: string;
   state: string;
-  location: object; // Define this more specifically if you have a structure
+  location: object; 
   status: string;
   showAllStates: boolean;
   createdAd: string; // Consider using Date type if you want to handle dates

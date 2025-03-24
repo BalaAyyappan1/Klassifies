@@ -27,7 +27,7 @@ interface ActionCardData {
   description: string;
 }
 
-const page = () => {
+const Page = () => {
   const [ads, setAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -105,7 +105,7 @@ const page = () => {
                 Welcome to <span>Klassifies.com</span> – Your Ultimate Klassifieds Hub!
 `              </h1>
               <p className="text-lg">
-                Discover a world of opportunities with Klassifies.com, your go-to platform for buying, selling, and connecting in your local community. Whether you're looking to find the perfect item, explore new services, or connect with others nearby, Klassifies.com makes it easy and convenient.
+                Discover a world of opportunities with Klassifies.com, your go-to platform for buying, selling, and connecting in your local community. Whether you&apos;re looking to find the perfect item, explore new services, or connect with others nearby, Klassifies.com makes it easy and convenient.
               </p>
             </header>
 
@@ -232,4 +232,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

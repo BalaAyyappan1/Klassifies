@@ -67,10 +67,10 @@ export async function POST(req: NextRequest) {
     }
   
     try {
-      const decoded = jwt.verify(refreshToken.value, REFRESH_TOKEN_SECRET) as {
-        userId: string;
-        email: string;
-      };
+      // const decoded = jwt.verify(refreshToken.value, REFRESH_TOKEN_SECRET) as {
+      //   userId: string;
+      //   email: string;
+      // };
       
       const formData = await req.formData();
       

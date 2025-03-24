@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import HomeVideo from '@/components/HomeVideo'
-
+import Image from 'next/image'
 interface ActionCardProps {
   iconClass: string;
   title: string;
@@ -103,7 +103,7 @@ const page = () => {
             <header className="bg-blue-800 rounded shadow-lg text-white py-10 px-5 text-center">
               <h1 className="text-4xl font-bold mb-3">
                 Welcome to <span>Klassifies.com</span> – Your Ultimate Klassifieds Hub!
-              </h1>
+`              </h1>
               <p className="text-lg">
                 Discover a world of opportunities with Klassifies.com, your go-to platform for buying, selling, and connecting in your local community. Whether you're looking to find the perfect item, explore new services, or connect with others nearby, Klassifies.com makes it easy and convenient.
               </p>
@@ -144,9 +144,11 @@ const page = () => {
                     <div className="relative rounded-lg overflow-hidden shadow-xl">
                       {/* Ad Image with transition effect */}
                       <div className="aspect-w-16 aspect-h-9 relative">
-                        <img 
+                        <Image 
                           src={ads[currentAdIndex].images[currentImageIndex]} 
                           alt="Advertisement"
+                          width={100}
+                          height={100}
                           className="w-full h-96 object-cover transition-all duration-500 ease-in-out"
                           style={{ transform: 'scale(1.01)' }}
                         />
@@ -220,7 +222,7 @@ const page = () => {
                 Join our growing community today and discover a smarter, simpler way to connect.
               </p>
               <p className="font-bold">
-                Start exploring or posting your ads now – it's completely free!
+                Start exploring or posting your ads now – it&apos;s completely free!
               </p>
             </footer>
           </main>

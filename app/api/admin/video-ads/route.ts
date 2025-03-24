@@ -20,11 +20,7 @@ export async function POST(req: NextRequest) {
     }
   
     try {
-      const decoded = jwt.verify(refreshToken.value, REFRESH_TOKEN_SECRET) as {
-        userId: string;
-        email: string;
-      };
-      
+
       const formData = await req.formData();
       
       // Get the uploaded video file
@@ -177,7 +173,7 @@ export async function GET(req: NextRequest) {
         const pathname = videoUrl.pathname.slice(1);
         const bucketName = process.env.R2_BUCKET_NAME || '';
         videoKey = pathname.replace(`${bucketName}/`, "");
-      } catch (e) {
+      } catch {
         // Fallback to simple string extraction if URL parsing fails
         videoKey = videoObj.video.split('/').slice(-2).join('/');
       }

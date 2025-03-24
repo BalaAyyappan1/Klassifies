@@ -38,6 +38,16 @@ interface Ad {
   };
 }
 
+type SubSubcategory = {
+  name: string;
+  id?: number; // Add any other necessary properties
+};
+
+type SubCategory = {
+  name: string;
+  id: number;
+  subcategories?: SubSubcategory[]; // Optional
+};
 const Page = () => {
   const params = useParams();
   const { category } = params;
@@ -47,8 +57,8 @@ const Page = () => {
     (cat) => slugify(cat.name) === category
   );
 
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  const [selectedSubSubcategory, setSelectedSubSubcategory] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<SubCategory | null>(null);
+  const [selectedSubSubcategory, setSelectedSubSubcategory] = useState<SubSubcategory | null>(null);
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
@@ -96,15 +106,17 @@ const Page = () => {
     );
   }
 
-  const handleSubcategoryClick = (subcategory) => {
+  const handleSubcategoryClick = (subcategory: SubCategory) => {
     setSelectedSubcategory(subcategory);
     setSelectedSubSubcategory(null);
     fetchAds(subcategory.name); // Pass the name instead of ID
   };
 
-  const handleSubSubcategoryClick = (subSubcategory) => {
+  const handleSubSubcategoryClick = (subSubcategory: SubSubcategory) => {
     setSelectedSubSubcategory(subSubcategory);
-    fetchAds(selectedSubcategory.name, subSubcategory.name); // Pass the name instead of ID
+    if (selectedSubcategory?.name) {
+      fetchAds(selectedSubcategory.name, subSubcategory.name);
+    }
   };
 
   const fetchAds = async (

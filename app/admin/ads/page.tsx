@@ -78,7 +78,7 @@ const Modal = ({
   );
 };
 
-const page: React.FC = () => {
+const page = () => {
   const [ads, setAds] = useState<AdWithUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

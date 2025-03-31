@@ -12,7 +12,7 @@ interface Employee {
   adsCount?: number; // Assuming you might want to show number of ads
 }
 
-const employees: React.FC = () => {
+const employees  = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

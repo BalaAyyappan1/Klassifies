@@ -21,7 +21,7 @@ interface User {
   adsCount?: number;
 }
 
-const page: React.FC = () => {
+const page = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

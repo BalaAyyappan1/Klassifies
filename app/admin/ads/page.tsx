@@ -78,7 +78,7 @@ const Modal = ({
   );
 };
 
-const page = () => {
+const Page = () => {
   const [ads, setAds] = useState<AdWithUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -278,4 +278,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

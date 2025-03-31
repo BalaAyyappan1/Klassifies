@@ -21,7 +21,7 @@ interface User {
   adsCount?: number;
 }
 
-const page = () => {
+const Page = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -132,7 +132,7 @@ const page = () => {
         {selectedUserId && (
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-bold mb-4">
-              {users.find(u => u._id === selectedUserId)?.name}'s Ads
+              {users.find(u => u._id === selectedUserId)?.name}&apos;s Ads
               <span className="ml-2 text-sm font-normal text-gray-500">
                 ({users.find(u => u._id === selectedUserId)?.ads?.length || 0} ads)
               </span>
@@ -169,4 +169,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

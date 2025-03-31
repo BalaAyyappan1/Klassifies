@@ -36,7 +36,7 @@ interface Ad {
   };
 }
 
-const page = () => {
+const Page = () => {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
   
@@ -358,4 +358,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

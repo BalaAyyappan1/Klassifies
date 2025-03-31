@@ -50,10 +50,6 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
 // }
 
 
-
-
-
-
 export async function POST(req: NextRequest) {
   try {
     await connectDB();

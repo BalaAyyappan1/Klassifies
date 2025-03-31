@@ -231,7 +231,7 @@ const Page = () => {
           </div>
 
           {/* Right Column (Main Content) */}
-          <div className="w-full max-w-6xl p-6 bg-white rounded-tr-[10px] rounded-br-[10px] shadow-md overflow-hidden overflow-y-auto h-[700px] flex flex-col items-center">
+          <div className="w-full max-w-6xl p-6 bg-white dark:bg-[#141414] rounded-tr-[10px] rounded-br-[10px] shadow-md overflow-hidden overflow-y-auto h-[700px] flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-4">
               {" "}
               {selectedCategory.name}
@@ -244,7 +244,7 @@ const Page = () => {
                   ads.map((ad) => (
                     <div
                       key={ad._id}
-                      className="border pb-4 mb-4 w-full flex justify-between items-start hover:scale-105 rounded-[3px] hover:bg-gray-100 transition-transform duration-200 cursor-pointer"
+                      className="border pb-4 mb-4 w-full flex justify-between items-start hover:scale-104  rounded-[3px] hover:bg-gray-100 dark:hover:bg-[#333333]  cursor-pointer"
                       onClick={() => openModal(ad)}
                     >
                       {/* Title and Description Section */}
@@ -252,7 +252,7 @@ const Page = () => {
                         <h3 className="text-xl font-semibold mb-1">
                           {ad.title}
                         </h3>
-                        <p className="text-gray-700">{ad.description}</p>
+                        <p className="text-gray-700 dark:text-white">{ad.description}</p>
                       </div>
 
                       {/* User Profile Section */}
@@ -296,11 +296,11 @@ const Page = () => {
       {/* Custom Modal for displaying full ad details */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-50 z-50">
-          <div className="bg-white  p-6 w-11/12 max-w-lg relative rounded-[13px]">
+          <div className="bg-white dark:bg-[#141414]  p-6 w-11/12 max-w-lg relative rounded-[13px]">
             {/* Close Button */}
             <button
               onClick={closeModal}
-              className="absolute top-1 right-1 text-gray-500 hover:text-gray-700 transition-colors"
+              className="absolute top-1 right-1 text-gray-500 hover:text-gray-700  transition-colors"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -331,13 +331,13 @@ const Page = () => {
                     />
                     <button
                       onClick={prevImage}
-                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow"
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white dark:bg-[#131313] rounded-full p-2 shadow"
                     >
                       &lt;
                     </button>
                     <button
                       onClick={nextImage}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white  dark:bg-[#131313] rounded-full p-2 shadow"
                     >
                       &gt;
                     </button>
@@ -356,10 +356,10 @@ const Page = () => {
                   </div>
                 )}
                 <h2 className="text-2xl mt-5 font-bold">{selectedAd.title}</h2>
-                <p className="text-gray-700">{selectedAd.description}</p>
-                <p className="text-gray-700">{selectedAd.address}</p>
-                <p className="text-gray-700">{selectedAd.city}</p>
-                <p className="text-gray-700">{selectedAd.state}</p>
+                <p className="text-gray-700 dark:text-white">{selectedAd.description}</p>
+                <p className="text-gray-700 dark:text-white">{selectedAd.address}</p>
+                <p className="text-gray-700 dark:text-white">{selectedAd.city}</p>
+                <p className="text-gray-700 dark:text-white">{selectedAd.state}</p>
                 <div className="pt-2">
                   {isAuthenticated ? (
                     <p className="text-gray-700">{selectedAd.mobile}</p>

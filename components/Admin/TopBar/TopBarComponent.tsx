@@ -79,11 +79,11 @@ export default function TopBarPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-[#141414] p-8">
       <h1 className="text-3xl font-bold mb-8 text-center">Top Bar Configuration</h1>
 
       {/* Form to Add New Top Bar */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+      <div className="bg-white  dark:bg-[#141414]  p-6 rounded-lg shadow-md mb-8">
         <h2 className="text-xl font-semibold mb-4">Add New Top Bar</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -92,51 +92,51 @@ export default function TopBarPage() {
               type="text"
               value={formData.adName}
               onChange={(e) => setFormData({ ...formData, adName: e.target.value })}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full p-2 dark:bg-[#333333] border border-gray-300 rounded-md"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Text Color</label>
+            <label className="block text-sm font-medium dark:text-white text-gray-700">Text Color</label>
             <input
               type="color"
               value={formData.textColor}
               onChange={(e) => setFormData({ ...formData, textColor: e.target.value })}
-              className="mt-1 block w-full p-1 border border-gray-300 rounded-md"
+              className="mt-1 block p-1 border dark:bg-[#333333] border-gray-300 rounded-md"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Background Color</label>
+            <label className="block text-sm font-medium dark:text-white text-gray-700">Background Color</label>
             <input
               type="color"
               value={formData.bgColor}
               onChange={(e) => setFormData({ ...formData, bgColor: e.target.value })}
-              className="mt-1 block w-full p-1 border border-gray-300 rounded-md"
+              className="mt-1 block  p-1 border border-gray-300 rounded-md"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Font Size</label>
+            <label className="block text-sm font-medium dark:text-white text-gray-700">Font Size</label>
             <input
               type="text"
               value={formData.fontSize}
               onChange={(e) => setFormData({ ...formData, fontSize: e.target.value })}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full p-2 border dark:bg-[#333333] border-gray-300 rounded-md"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Link</label>
+            <label className="block text-sm font-medium dark:text-white text-gray-700">Link</label>
             <input
               type="text"
               value={formData.link}
               onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full p-2 border dark:bg-[#333333] border-gray-300 rounded-md"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+            className=" bg-blue-700 text-white  py-2 px-4 rounded-md hover:bg-blue-600"
           >
             Add Top Bar
           </button>
@@ -144,7 +144,7 @@ export default function TopBarPage() {
       </div>
 
       {/* Display All Top Bars */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white dark:bg-[#141414] p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">All Top Bars</h2>
         {topBars.length === 0 ? (
           <p className="text-gray-500">No top bars found.</p>

@@ -60,7 +60,7 @@ const Modal = ({
           <div className="absolute right-2 top-2">
             <button
               onClick={onClose}
-              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
+              className="rounded-md bg-white dark:bg-[#1e1e1e] text-gray-400 hover:text-gray-500 focus:outline-none"
             >
               <span className="sr-only">Close</span>
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,7 +69,7 @@ const Modal = ({
             </button>
           </div>
           
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div className="bg-white dark:bg-[#1e1e1e] px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             {children}
           </div>
         </div>
@@ -206,7 +206,7 @@ const Page = () => {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         {selectedAd && (
-          <div className="p-6">
+          <div className="p-6 dark:bg-[#1e1e1e]">
             <h2 className="text-2xl font-bold mb-4">{selectedAd.title}</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

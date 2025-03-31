@@ -1,5 +1,5 @@
 import AdminLayout from '@/components/Admin/AdminLayout';
-import Video from '@/components/Admin/Video/Video';
+import Video from '@/components/Admin/Video/HomePageVideo';
 
 import React from 'react';
 

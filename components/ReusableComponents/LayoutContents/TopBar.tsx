@@ -8,8 +8,10 @@ import { categoryData } from "@/Data/Categories";
 import { slugify } from "@/utils/slugify";
 import { checkAuthStatus, fetchUserInfo } from "@/components/Api/Api";
 import DisplayTopBar from "@/components/Admin/TopBar/DisplayTopBar";
+import { useRouter } from "next/navigation";
 
 const TopBar: React.FC = () => {
+  const router = useRouter();
   const [searchBar, setSearchBar] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -46,6 +48,15 @@ const TopBar: React.FC = () => {
     }
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchBar.trim() !== "") {
+      // Navigate to search results page with the search query
+      router.push(`/search?q=${encodeURIComponent(searchBar)}`);
+    }
+  };
+
+
   return (
     <div>
       <DisplayTopBar />
@@ -59,20 +70,23 @@ const TopBar: React.FC = () => {
         </div>
 
         {/* Search Bar Section */}
-        <div className="relative w-full max-w-md flex-grow hidden sm:block md:block">
+        <form onSubmit={handleSearch} className="relative w-full max-w-md flex-grow hidden sm:block md:block">
           <LabelInput
             type="text"
-            placeholder="Search..."
+            placeholder="Search by title, city, or state..."
             value={searchBar}
             onChange={(e) => setSearchBar(e.target.value)}
             labelText={""}
             htmlFor={""}
             className="w-full"
           />
-          <div className="absolute right-0 top-[26px] transform -translate-y-1/2 bg-blue-800 p-[0.64rem] rounded-tr rounded-br">
+          <button 
+            type="submit" 
+            className="absolute right-0 top-[26px] transform -translate-y-1/2 bg-blue-800 p-[0.64rem] rounded-tr rounded-br"
+          >
             <FaSearch className="text-white" />
-          </div>
-        </div>
+          </button>
+        </form>
 
         <div>
           {!isAuthenticated ? (

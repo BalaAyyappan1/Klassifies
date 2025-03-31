@@ -1,4 +1,4 @@
-// app/api/filter-ads/route.ts
+// app/api/search-ads/route.ts
 import connectDB from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import Ad from "@/models/ad";
@@ -8,45 +8,32 @@ import { getFromR2 } from "@/lib/r2";
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const { 
-      mainCategoryName, 
-      subCategory1Name, 
-      subCategory2Name,
-      latitude,
-      longitude,
-      radius // in kilometers
-    } = await req.json();
-
-    const filter: any = {};
-
-    // Category filtering
-    if (mainCategoryName !== undefined && mainCategoryName !== null) {
-      filter.mainCategory = mainCategoryName;
+    
+    const { searchQuery } = await req.json();
+    
+    if (!searchQuery || searchQuery.trim() === '') {
+      return NextResponse.json(
+        { message: "Search query is required" },
+        { status: 400 }
+      );
     }
-    if (subCategory1Name !== undefined && subCategory1Name !== null) {
-      filter.subCategory = subCategory1Name;
-    }
-    if (subCategory2Name !== undefined && subCategory2Name !== null) {
-      filter.subCategory2 = subCategory2Name;
-    }
-
-    // Geolocation filtering (only applied if all required params are present)
-    if (latitude !== undefined && longitude !== undefined && radius !== undefined) {
-      filter.location = {
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: [longitude, latitude]
-          },
-          $maxDistance: radius * 1000 // Convert km to meters
-        }
-      };
-    }
-
-    // Query the database for ads that match the filter
+    
+    // Create a case-insensitive regex search pattern
+    const searchPattern = new RegExp(searchQuery, 'i');
+    
+    // Search in title, city, or state
+    const filter = {
+      $or: [
+        { title: searchPattern },
+        { city: searchPattern },
+        { state: searchPattern }
+      ]
+    };
+    
+    // Query the database for ads matching the search criteria
     const ads = await Ad.find(filter).sort({ createdAd: -1 });
-
-    // Map ads to include user profile information
+    
+    // Map ads to include user profile information (same as in filter-ads route)
     const adsWithUserProfiles = await Promise.all(ads.map(async (ad) => {
       const userProfile = await User.findById(ad.userId).select("name profile");
       
@@ -68,11 +55,11 @@ export async function POST(req: NextRequest) {
       }
       
       return {
-        id: ad._id,
+        _id: ad._id,
         userId: ad.userId,
         title: ad.title,
         description: ad.description,
-        images: images || [], // Ensure images are in an array
+        images: images || [],
         location: ad.location,
         address: ad.address,
         city: ad.city,
@@ -88,24 +75,19 @@ export async function POST(req: NextRequest) {
         showAllStates: ad.showAllStates,
         userProfile: {
           name: userProfile?.name,
-          profilePhoto: userProfile?.profile // Include user profile photo
+          profilePhoto: userProfile?.profile
         }
       };
     }));
-
+    
     return NextResponse.json(
-      {
-        message: "Ads retrieved successfully",
-        ads: adsWithUserProfiles,
-      },
+      { message: "Search results retrieved successfully", ads: adsWithUserProfiles },
       { status: 200 }
     );
+    
   } catch (error) {
     return NextResponse.json(
-      {
-        message: "Internal server error",
-        error: error instanceof Error ? error.message : String(error),
-      },
+      { message: "Internal server error", error: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

@@ -103,7 +103,7 @@ const Page = () => {
             <header className="bg-blue-800 rounded shadow-lg text-white py-10 px-5 text-center">
               <h1 className="text-4xl font-bold mb-3">
                 Welcome to <span>Klassifies.com</span> – Your Ultimate Klassifieds Hub!
-`              </h1>
+            </h1>
               <p className="text-lg">
                 Discover a world of opportunities with Klassifies.com, your go-to platform for buying, selling, and connecting in your local community. Whether you&apos;re looking to find the perfect item, explore new services, or connect with others nearby, Klassifies.com makes it easy and convenient.
               </p>

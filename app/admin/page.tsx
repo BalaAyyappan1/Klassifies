@@ -9,12 +9,11 @@ const page: React.FC = () => {
         <div>
             <Adminlayout>
                 <div className=' gap-5'>
-                    <TotalUsers />
+                    {/* <TotalUsers /> */}
                     <User />
                 </div>
                 <div className='mt-20'>
-                    <TotalAdsTable />
-
+                   
                 </div>
 
             </Adminlayout>

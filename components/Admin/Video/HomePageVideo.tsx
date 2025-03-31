@@ -158,16 +158,16 @@ const HomePageVideo = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 dark:bg-[#1e1e1e] bg-gray-100 ">
       <h1 className="text-2xl font-bold mb-6">Video Management</h1>
       
       {/* Upload Form */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+      <div className="bg-white dark:bg-[#1e1e1e] p-6 rounded-lg shadow-md mb-8">
         <h2 className="text-xl font-semibold mb-4">Upload New Video</h2>
         <form onSubmit={uploadVideo} className="space-y-4">
           {/* Link input field */}
           <div className="mb-4">
-            <label htmlFor="video-link" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="video-link" className="block dark:text-white text-sm font-medium text-gray-700 mb-1">
               Video Link (Optional)
             </label>
             <input
@@ -176,7 +176,7 @@ const HomePageVideo = () => {
               placeholder="https://example.com"
               value={videoLink}
               onChange={(e) => setVideoLink(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-[#333333] bg-[#333333] rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             <p className="mt-1 text-sm text-gray-500">
               Enter the URL where users will be directed when they click on the video.
@@ -214,7 +214,7 @@ const HomePageVideo = () => {
           <button
             type="submit"
             disabled={uploading || !videoFile}
-            className="bg-blue-600 text-white px-4 py-2 rounded disabled:bg-blue-300"
+            className="bg-blue-700 text-white px-4 py-2 rounded disabled:bg-blue-700"
           >
             {uploading ? 'Uploading...' : 'Upload Video'}
           </button>
@@ -222,7 +222,7 @@ const HomePageVideo = () => {
       </div>
       
       {/* Display existing videos */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white dark:bg-[#1e1e1e] p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Existing Videos</h2>
         
         {loading ? (

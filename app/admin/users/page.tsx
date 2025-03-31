@@ -78,20 +78,22 @@ const Page = () => {
 
   const rows = users.map(user => [
     <span 
+      key={`name-${user._id}`}
       className="text-blue-500 cursor-pointer hover:underline"
       onClick={() => toggleUserSelection(user._id)}
     >
       {user.name}
     </span>,
-    user.email,
+    <span key={`email-${user._id}`}>{user.email}</span>,
     user.isBlocked ? (
-      <span className="text-red-500 font-medium">Blocked</span>
+      <span key={`status-${user._id}`} className="text-red-500 font-medium">Blocked</span>
     ) : (
-      <span className="text-green-500 font-medium">Active</span>
+      <span key={`status-${user._id}`} className="text-green-500 font-medium">Active</span>
     ),
-    user.phoneNumber,
-    <span className="font-medium">{user.ads?.length || 0}</span>,
+    <span key={`phone-${user._id}`}>{user.phoneNumber}</span>,
+    <span key={`ads-${user._id}`} className="font-medium">{user.ads?.length || 0}</span>,
     <button
+      key={`action-${user._id}`}
       onClick={() => toggleBlockStatus(user._id, user.isBlocked)}
       className={`px-3 py-1 rounded-md text-white ${
         user.isBlocked ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
@@ -125,10 +127,8 @@ const Page = () => {
         <Table 
           headers={headers} 
           rows={rows}
-        //   emptyMessage={users.length === 0 ? "No users found" : undefined}
         />
         
-        {/* User Ads Section */}
         {selectedUserId && (
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-bold mb-4">
@@ -140,7 +140,7 @@ const Page = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {users.find(u => u._id === selectedUserId)?.ads?.map(ad => (
-                <div key={ad._id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div key={`ad-${ad._id}`} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                   <h3 className="font-medium text-lg">{ad.title}</h3>
                   <div className="flex justify-between items-center mt-2">
                     <span className={`text-xs px-2 py-1 rounded-full ${

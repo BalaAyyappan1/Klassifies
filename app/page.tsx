@@ -5,39 +5,50 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import HomeVideo from '@/components/HomeVideo'
 import Image from 'next/image'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FiArrowRight, FiArrowLeft, FiExternalLink } from 'react-icons/fi'
+import { FaSearch, FaAd, FaComments } from 'react-icons/fa'
+
 interface ActionCardProps {
-  iconClass: string;
+  icon: React.ReactNode;
   title: string;
   description: string;
 }
 
-// Reusable ActionCard Component
-const ActionCard: React.FC<ActionCardProps> = ({ iconClass, title, description }) => (
-  <div className="action-card dark:bg-[#333333] p-5 shadow-lg rounded-lg text-center">
-    <i className={`icon ${iconClass} text-blue-800 mb-3 text-3xl`}></i>
-    <h3 className="text-xl font-semibold mb-2 text-blue-800">{title}</h3>
-    <p>{description}</p>
-  </div>
+// Enhanced ActionCard Component with animations
+const ActionCard: React.FC<ActionCardProps> = ({ icon, title, description }) => (
+  <motion.div 
+    className="action-card bg-white dark:bg-[#333333] p-6 shadow-lg rounded-xl text-center border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full flex flex-col"
+    whileHover={{ y: -5 }}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    <div className="icon-wrapper bg-blue-100 dark:bg-blue-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600 dark:text-blue-300">
+      {icon}
+    </div>
+    <h3 className="text-xl font-bold mb-3 text-blue-800 dark:text-blue-300">{title}</h3>
+    <p className="text-gray-600 dark:text-gray-300 flex-grow">{description}</p>
+  </motion.div>
 );
 
-// Define the action card data type
-interface ActionCardData {
-  iconClass: string;
-  title: string;
-  description: string;
+interface AdType {
+  images: string[];
+  link?: string;
+  title?: string;
 }
 
 const Page = () => {
-  const [ads, setAds] = useState<any[]>([]);
+  const [ads, setAds] = useState<AdType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
+  const [direction, setDirection] = useState<'left'|'right'>('right');
 
   const fetchAds = async () => {
     try {
       setLoading(true);
       const response = await axios.get('/api/admin/home-page-ads');
-      console.log("Fetched ads:", response.data); // Log to see the structure
       setAds(response.data);
     } catch (error) {
       console.error('Error fetching home page ads:', error);
@@ -51,10 +62,9 @@ const Page = () => {
     fetchAds();
   }, []);
   
-  // Functions to navigate through carousel
   const nextImage = () => {
     if (ads.length === 0 || !ads[currentAdIndex].images) return;
-    
+    setDirection('right');
     setCurrentImageIndex((prevIndex) => 
       (prevIndex + 1) % ads[currentAdIndex].images.length
     );
@@ -62,172 +72,301 @@ const Page = () => {
   
   const prevImage = () => {
     if (ads.length === 0 || !ads[currentAdIndex].images) return;
-    
+    setDirection('left');
     setCurrentImageIndex((prevIndex) => 
       (prevIndex - 1 + ads[currentAdIndex].images.length) % ads[currentAdIndex].images.length
     );
   };
+
+  const nextAd = () => {
+    if (ads.length <= 1) return;
+    setDirection('right');
+    setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
+    setCurrentImageIndex(0);
+  };
+
+  const prevAd = () => {
+    if (ads.length <= 1) return;
+    setDirection('left');
+    setCurrentAdIndex((prevIndex) => (prevIndex - 1 + ads.length) % ads.length);
+    setCurrentImageIndex(0);
+  };
   
-  const actionCards: ActionCardData[] = [
+  const actionCards = [
     {
-      iconClass: 'browse-icon',
+      icon: <FaSearch className="text-2xl" />,
       title: 'Browse Listings',
-      description:
-        'Explore our extensive range of categories and find exactly what youapos;re looking for.',
+      description: 'Explore our extensive range of categories and find exactly what you\'re looking for.',
     },
     {
-      iconClass: 'post-ad-icon',
+      icon: <FaAd className="text-2xl" />,
       title: 'Post an Ad',
       description: 'Create a free listing for items you want to sell or services you offer.',
     },
     {
-      iconClass: 'connect-icon',
+      icon: <FaComments className="text-2xl" />,
       title: 'Connect and Communicate',
-      description:
-        'Use our messaging system to securely communicate with buyers or sellers.',
+      description: 'Use our messaging system to securely communicate with buyers or sellers.',
     },
   ];
   
-  // Create a key that changes on each page load to force the component to remount
   const videoKey = React.useMemo(() => Date.now(), []);
-  
+
+  // Animation variants for the carousel
+  const variants = {
+    enter: (direction: string) => ({
+      x: direction === 'right' ? 1000 : -1000,
+      opacity: 0
+    }),
+    center: {
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: string) => ({
+      x: direction === 'right' ? -1000 : 1000,
+      opacity: 0
+    })
+  };
+
   return (
-    <div>
+    <div className="bg-gray-50 dark:bg-gray-900">
       <Layout>
-        {/* Promotional Video - Using key to force remount on refresh */}
+        {/* Promotional Video */}
         <HomeVideo key={videoKey} />
         
-        <div className="p-3">
-          <main className="p-3 space-y-10">
-            {/* Header Section */}
-            <header className="bg-blue-800 rounded shadow-lg text-white py-10 px-5 text-center">
-              <h1 className="text-4xl font-bold mb-3">
-                Welcome to <span>Klassifies.com</span> – Your Ultimate Klassifieds Hub!
-            </h1>
-              <p className="text-lg">
-                Discover a world of opportunities with Klassifies.com, your go-to platform for buying, selling, and connecting in your local community. Whether you&apos;re looking to find the perfect item, explore new services, or connect with others nearby, Klassifies.com makes it easy and convenient.
-              </p>
-            </header>
+        <div className="container mx-auto px-4 py-8">
+          <main className="space-y-16">
+            {/* Hero Section */}
+            <motion.section 
+              className="bg-gradient-to-r from-blue-700 to-blue-900 rounded-2xl shadow-2xl text-white py-16 px-6 text-center overflow-hidden relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="absolute inset-0 bg-noise opacity-10 pointer-events-none"></div>
+              <div className="relative z-10 max-w-4xl mx-auto">
+                <motion.h1 
+                  className="text-4xl md:text-5xl font-bold mb-6 leading-tight"
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.8 }}
+                >
+                  Welcome to <span className="text-blue-300">Klassifies.com</span> –<br />Your Ultimate Classifieds Hub!
+                </motion.h1>
+                <motion.p 
+                  className="text-lg md:text-xl mb-8 max-w-3xl mx-auto"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                >
+                  Discover a world of opportunities with Klassifies.com, your go-to platform for buying, selling, and connecting in your local community.
+                </motion.p>
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
+                >
+                  
+                </motion.div>
+              </div>
+            </motion.section>
 
-            <section id="get-started" className="space-y-5 ">
-              <h2 className="text-2xl font-bold text-blue-800 text-center">Get Started Today!</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 rounded-lg">
+            {/* Get Started Section */}
+            <section id="get-started" className="space-y-12">
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="text-center"
+              >
+                <h2 className="text-3xl font-bold text-blue-800 dark:text-blue-400 mb-4">Get Started Today!</h2>
+                <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                  Join thousands of satisfied users who are already buying and selling on our platform
+                </p>
+              </motion.div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 {actionCards.map((card, index) => (
                   <ActionCard
                     key={index}
-                    iconClass={card.iconClass}
+                    icon={card.icon}
                     title={card.title}
                     description={card.description}
-                  
                   />
                 ))}
               </div>
-              <div className="text-center">
-                <a
-                  href="/listings"
-                  className="cta-button bg-blue-800 text-white py-2 px-4 rounded-full font-semibold inline-block mt-5"
-                >
-                  Start Exploring
-                </a>
-              </div>
             </section>
-            <section id="Home-page-ads" className="space-y-5">
-              <h2 className="text-2xl font-bold text-blue-800 text-center">Featured Ads</h2>
-              
+
+            {/* Featured Ads Section */}
+            <section id="Home-page-ads" className="space-y-8">
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="text-center"
+              >
+                <h2 className="text-3xl font-bold text-blue-800 dark:text-blue-400 mb-2">Featured Ads</h2>
+                <p className="text-gray-600 dark:text-gray-300">Discover premium listings from our community</p>
+              </motion.div>
+
               {loading ? (
-                <div className="text-center py-8">Loading ads...</div>
+                <div className="text-center py-12">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                </div>
               ) : ads.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">Contact Us to Post Your Ads</div>
+                <motion.div 
+                  className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl shadow-md"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <p className="text-gray-500 dark:text-gray-400 text-lg">
+                    No featured ads available. Contact us to showcase your business here!
+                  </p>
+                </motion.div>
               ) : (
-                <div className="relative max-w-4xl mx-auto">
-                  {ads[currentAdIndex]?.images && ads[currentAdIndex].images.length > 0 && (
-                    <div className="relative rounded-lg overflow-hidden shadow-xl">
-                      {/* Ad Image with transition effect */}
-                      <div className="aspect-w-16 aspect-h-9 relative">
-                        <Image 
-                          src={ads[currentAdIndex].images[currentImageIndex]} 
-                          alt="Advertisement"
-                          width={100}
-                          height={100}
-                          className="w-full h-96 object-cover transition-all duration-500 ease-in-out"
-                          style={{ transform: 'scale(1.01)' }}
-                        />
-                        
-                        {/* Better Navigation arrows */}
-                        <button 
-                          onClick={prevImage}
-                          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-blue-800/60 hover:bg-blue-800/90 rounded-full p-3 shadow-md z-10 transition-all duration-300"
-                          aria-label="Previous image"
+                <div className="relative max-w-5xl mx-auto">
+                  <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white dark:bg-gray-800">
+                    <div className="aspect-w-16 aspect-h-9 relative h-96">
+                      <AnimatePresence custom={direction} mode="wait">
+                        <motion.div
+                          key={`${currentAdIndex}-${currentImageIndex}`}
+                          custom={direction}
+                          variants={variants}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                          className="absolute inset-0"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                            <path d="M15 18l-6-6 6-6" />
-                          </svg>
-                        </button>
-                        
-                        <button 
-                          onClick={nextImage}
-                          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-blue-800/60 hover:bg-blue-800/90 rounded-full p-3 shadow-md z-10 transition-all duration-300"
-                          aria-label="Next image"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                            <path d="M9 18l6-6-6-6" />
-                          </svg>
-                        </button>
-                        
-                        {/* Improved Dots navigation */}
-                        {ads[currentAdIndex].images.length > 1 && (
-                          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3">
-                            {ads[currentAdIndex].images.map((_: any, index: number) => (
-                              <button
-                                key={index}
-                                onClick={() => setCurrentImageIndex(index)}
-                                className={`h-3 w-3 rounded-full transition-all duration-300 ${
-                                  currentImageIndex === index 
-                                    ? 'bg-white scale-110' 
-                                    : 'bg-white/50 hover:bg-white/70'
-                                }`}
-                                aria-label={`Go to image ${index + 1}`}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                          <Image 
+                            src={ads[currentAdIndex].images[currentImageIndex]} 
+                            alt="Advertisement"
+                            fill
+                            className="object-cover"
+                            priority
+                          />
+                        </motion.div>
+                      </AnimatePresence>
                       
-                      {/* Ad Info with transition */}
-                      {ads[currentAdIndex].link && (
-                        <div className="bg-white p-4 text-center shadow-inner">
-                          <a 
-                            href={ads[currentAdIndex].link}
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-blue-800 hover:text-blue-600 font-medium transition-colors duration-300 inline-flex items-center"
+                      {/* Navigation arrows */}
+                      <button 
+                        onClick={prevImage}
+                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white dark:bg-gray-700/80 dark:hover:bg-gray-700 rounded-full p-3 shadow-lg z-10 transition-all duration-300 group"
+                        aria-label="Previous image"
+                      >
+                        <FiArrowLeft className="text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 text-xl" />
+                      </button>
+                      
+                      <button 
+                        onClick={nextImage}
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white dark:bg-gray-700/80 dark:hover:bg-gray-700 rounded-full p-3 shadow-lg z-10 transition-all duration-300 group"
+                        aria-label="Next image"
+                      >
+                        <FiArrowRight className="text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 text-xl" />
+                      </button>
+                      
+                      {/* Ad navigation (if multiple ads) */}
+                      {ads.length > 1 && (
+                        <div className="absolute top-4 right-4 flex gap-2 z-10">
+                          <button 
+                            onClick={prevAd}
+                            className="bg-white/80 hover:bg-white dark:bg-gray-700/80 dark:hover:bg-gray-700 rounded-full p-2 shadow-md transition-all duration-300"
+                            aria-label="Previous ad"
                           >
-                            Learn More
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
-                              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                              <polyline points="15 3 21 3 21 9"></polyline>
-                              <line x1="10" y1="14" x2="21" y2="3"></line>
-                            </svg>
-                          </a>
+                            <FiArrowLeft className="text-gray-800 dark:text-gray-200" />
+                          </button>
+                          <button 
+                            onClick={nextAd}
+                            className="bg-white/80 hover:bg-white dark:bg-gray-700/80 dark:hover:bg-gray-700 rounded-full p-2 shadow-md transition-all duration-300"
+                            aria-label="Next ad"
+                          >
+                            <FiArrowRight className="text-gray-800 dark:text-gray-200" />
+                          </button>
+                        </div>
+                      )}
+                      
+                      {/* Dots navigation */}
+                      {ads[currentAdIndex].images.length > 1 && (
+                        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3 z-10">
+                          {ads[currentAdIndex].images.map((_: any, index: number) => (
+                            <button
+                              key={index}
+                              onClick={() => setCurrentImageIndex(index)}
+                              className={`h-3 w-3 rounded-full transition-all duration-300 ${
+                                currentImageIndex === index 
+                                  ? 'bg-blue-600 dark:bg-blue-400 scale-110' 
+                                  : 'bg-white/50 hover:bg-white/70 dark:bg-gray-500/50 dark:hover:bg-gray-500/70'
+                              }`}
+                              aria-label={`Go to image ${index + 1}`}
+                            />
+                          ))}
                         </div>
                       )}
                     </div>
-                  )}
+                    
+                    {/* Ad Info */}
+                    {ads[currentAdIndex].link && (
+                      <div className="bg-gray-50 dark:bg-gray-700 p-6 text-center">
+                        <a 
+                          href={ads[currentAdIndex].link}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors duration-300 group"
+                        >
+                          Learn More
+                          <FiExternalLink className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </section>
-            {/* Footer Section */}
-            <footer className="community-invite bg-blue-800 rounded text-white py-10 px-5 text-center">
-              <p className="mb-3">
+
+            {/* CTA Section */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl shadow-xl text-white py-12 px-6 text-center"
+            >
+              <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
+              <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
                 Join our growing community today and discover a smarter, simpler way to connect.
               </p>
-              <p className="font-bold">
-                Start exploring or posting your ads now – it&apos;s completely free!
-              </p>
-            </footer>
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                
+                <a
+                  href="/create-ad"
+                  className="bg-transparent border-2 border-white hover:bg-white/10 py-3 px-8 rounded-full font-bold transition-all duration-300 transform hover:scale-105"
+                >
+                  Post an Ad
+                </a>
+              </div>
+            </motion.section>
           </main>
         </div>
       </Layout>
+
+      {/* Global styles for animations */}
+      <style jsx global>{`
+        .bg-noise {
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noiseFilter)' opacity='0.2'/%3E%3C/svg%3E");
+        }
+        
+        .action-card:hover .icon-wrapper {
+          transform: rotateY(180deg);
+          background-color: #3b82f6;
+          color: white;
+        }
+        
+        .icon-wrapper {
+          transition: all 0.5s ease;
+        }
+      `}</style>
     </div>
   )
 }

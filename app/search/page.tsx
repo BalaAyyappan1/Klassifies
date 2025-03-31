@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Layout from "@/components/ReusableComponents/Layout";
 import axios from "axios";
@@ -9,7 +9,7 @@ import placeholder from "@/public/placeholder.jpg";
 import { checkAuthStatus, fetchUserInfo } from "@/components/Api/Api";
 import Link from "next/link";
 
-// Define the Ad interface (same as in your category page)
+// Define the Ad interface
 interface Ad {
   _id: string;
   userId: string;
@@ -36,7 +36,8 @@ interface Ad {
   };
 }
 
-const Page = () => {
+// Creating a client component that uses useSearchParams
+function SearchContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
   
@@ -149,78 +150,74 @@ const Page = () => {
   };
 
   return (
-    <div>
-      <Layout>
-        <div className="flex flex-col mt-10 mb-10 p-4 items-center">
-          <div className="w-full max-w-6xl p-6 bg-white dark:bg-[#141414] rounded-[10px] shadow-md overflow-hidden overflow-y-auto min-h-[500px] flex flex-col items-center">
-            <h2 className="text-2xl font-bold mb-6">
-              {searchQuery ? `Search Results for "${searchQuery}"` : "Search Results"}
-            </h2>
-            
-            {loading ? (
-              <div className="flex justify-center items-center h-40">
-                <p>Loading results...</p>
-              </div>
-            ) : (
-              <div className="w-full flex flex-col items-center">
-                {ads.length > 0 ? (
-                  ads.map((ad) => (
-                    <div
-                      key={ad._id}
-                      className="border pb-4 mb-4 w-full flex justify-between items-start hover:scale-104 rounded-[3px] hover:bg-gray-100 dark:hover:bg-[#333333] cursor-pointer"
-                      onClick={() => openModal(ad)}
-                    >
-                      {/* Title and Description Section */}
-                      <div className="flex flex-col items-start w-3/4 pr-4 px-3 py-2">
-                        <h3 className="text-xl font-semibold mb-1">
-                          {ad.title}
-                        </h3>
-                        <p className="text-gray-700 dark:text-white mb-1">
-                          {ad.description}
-                        </p>
-                        <div className="text-sm text-gray-500">
-                          <span className="mr-2">{ad.city}</span>
-                          {ad.state && <span>{ad.state}</span>}
-                        </div>
-                      </div>
-
-                      {/* User Profile Section */}
-                      <div className="flex flex-col items-end space-y-7 py-1 px-3 w-1/4">
-                        <p className="text-sm text-gray-500 mb-1">
-                          {timeAgo(ad.createdAd)}
-                        </p>
-                        <div className="flex items-center">
-                          <Image
-                            src={
-                              ad.userProfile?.profilePhoto || placeholder.src
-                            }
-                            alt={ad.userProfile?.name || "Default User"}
-                            width={100}
-                            height={100}
-                            className="w-6 h-6 rounded-full mr-2"
-                          />
-                          <span className="font-medium">
-                            {ad.userProfile?.name || "Unknown User"}
-                          </span>
-                        </div>
-                      </div>
+    <div className="flex flex-col mt-10 mb-10 p-4 items-center">
+      <div className="w-full max-w-6xl p-6 bg-white dark:bg-[#141414] rounded-[10px] shadow-md overflow-hidden overflow-y-auto min-h-[500px] flex flex-col items-center">
+        <h2 className="text-2xl font-bold mb-6">
+          {searchQuery ? `Search Results for "${searchQuery}"` : "Search Results"}
+        </h2>
+        
+        {loading ? (
+          <div className="flex justify-center items-center h-40">
+            <p>Loading results...</p>
+          </div>
+        ) : (
+          <div className="w-full flex flex-col items-center">
+            {ads.length > 0 ? (
+              ads.map((ad) => (
+                <div
+                  key={ad._id}
+                  className="border pb-4 mb-4 w-full flex justify-between items-start hover:scale-104 rounded-[3px] hover:bg-gray-100 dark:hover:bg-[#333333] cursor-pointer"
+                  onClick={() => openModal(ad)}
+                >
+                  {/* Title and Description Section */}
+                  <div className="flex flex-col items-start w-3/4 pr-4 px-3 py-2">
+                    <h3 className="text-xl font-semibold mb-1">
+                      {ad.title}
+                    </h3>
+                    <p className="text-gray-700 dark:text-white mb-1">
+                      {ad.description}
+                    </p>
+                    <div className="text-sm text-gray-500">
+                      <span className="mr-2">{ad.city}</span>
+                      {ad.state && <span>{ad.state}</span>}
                     </div>
-                  ))
-                ) : (
-                  <div className="flex flex-col justify-center items-center">
-                    <Image
-                      src={SearchImage}
-                      alt="Search"
-                      className="mx-auto mt-10"
-                    />
-                    <p>No ads found matching your search.</p>
                   </div>
-                )}
+
+                  {/* User Profile Section */}
+                  <div className="flex flex-col items-end space-y-7 py-1 px-3 w-1/4">
+                    <p className="text-sm text-gray-500 mb-1">
+                      {timeAgo(ad.createdAd)}
+                    </p>
+                    <div className="flex items-center">
+                      <Image
+                        src={
+                          ad.userProfile?.profilePhoto || placeholder.src
+                        }
+                        alt={ad.userProfile?.name || "Default User"}
+                        width={100}
+                        height={100}
+                        className="w-6 h-6 rounded-full mr-2"
+                      />
+                      <span className="font-medium">
+                        {ad.userProfile?.name || "Unknown User"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col justify-center items-center">
+                <Image
+                  src={SearchImage}
+                  alt="Search"
+                  className="mx-auto mt-10"
+                />
+                <p>No ads found matching your search.</p>
               </div>
             )}
           </div>
-        </div>
-      </Layout>
+        )}
+      </div>
 
       {/* Custom Modal for displaying full ad details */}
       {isModalOpen && (
@@ -354,6 +351,19 @@ const Page = () => {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// Main page component that wraps the content with Suspense
+const Page = () => {
+  return (
+    <div>
+      <Layout>
+        <Suspense fallback={<div className="p-4 text-center">Loading search page...</div>}>
+          <SearchContent />
+        </Suspense>
+      </Layout>
     </div>
   );
 };

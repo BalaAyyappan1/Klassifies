@@ -16,7 +16,7 @@ export default async function sendPasswordResetEmail(email:string, token:string)
     subject: "Klassifies: Password Reset Request",
     html: `
       <p>Dear User,</p>
-      <p>We received a request to reset the password for your Spotlight account.</p>
+      <p>We received a request to reset the password for your Klassifies account.</p>
       <p>Please click the link below to reset your password:</p>
       <p>
         <a href="${resetPasswordURL}" style="color: #4F8AFF; text-decoration: none;">
@@ -24,7 +24,7 @@ export default async function sendPasswordResetEmail(email:string, token:string)
         </a>
       </p>
       <p>If you did not request a password reset, please disregard this email. Your account security is important to us, and no changes will be made without your confirmation.</p>
-      <p>Thank you,<br>The Spotlight Team</p>
+      <p>Thank you,<br>The Klassifies Team</p>
     `,
   };
 

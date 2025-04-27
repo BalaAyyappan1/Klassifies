@@ -45,3 +45,16 @@ export const fetchUserInfo = async () => {
     profile: userInfo.user.profile,
   };
 };
+
+
+
+export const forgotPassword = async (email: string) => {
+  const response = await axios.post("/api/auth/forgot-password", { email });
+  return response.data;
+};
+
+//Reset Password
+export const resetPassword = async (newPassword: string, token: string) => {
+  const response = await axios.post("/api/auth/reset-password", { newPassword, token });
+  return response.data;
+};

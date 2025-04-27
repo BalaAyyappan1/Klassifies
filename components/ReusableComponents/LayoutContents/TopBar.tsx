@@ -9,6 +9,8 @@ import { slugify } from "@/utils/slugify";
 import { checkAuthStatus, fetchUserInfo } from "@/components/Api/Api";
 import DisplayTopBar from "@/components/Admin/TopBar/DisplayTopBar";
 import { useRouter } from "next/navigation";
+import ThemeSwitch from "../ThemeSwitch";
+import { toast, ToastContainer } from "react-toastify";
 
 const TopBar: React.FC = () => {
   const router = useRouter();
@@ -90,16 +92,30 @@ const TopBar: React.FC = () => {
 
         <div>
           {!isAuthenticated ? (
+            
             <div className="flex flex-col text-center space-y-2">
+                     {/* <div className="w-full absolute top-10 right-0  flex justify-end pr-4 mt-2">
+                        <ThemeSwitch />
+                    </div> */}
               <span>
                 Hi Guest |{" "}
                 <Link href="/auth/signin" className="text-blue-800">
                   Login
                 </Link>
               </span>
-              <Link href="/create-ad">
-                <span className="font-medium text-blue-800">Create Ad</span>
-              </Link>
+
+              <Link 
+  href="/auth/signin"
+  onClick={(e) => {
+    e.preventDefault(); // Prevent immediate navigation
+    toast.info('You need to sign in to create an ad');
+    setTimeout(() => {
+      window.location.href = "/auth/signin"; // Navigate after 3 seconds
+    }, 3000);
+  }}
+>
+  <span className="font-medium text-blue-800">Create Ad</span>
+</Link>
             </div>
           ) : (
             <div>
@@ -130,7 +146,9 @@ const TopBar: React.FC = () => {
               )}
             </div>
           )}
+          
         </div>
+  
       </div>
 
       {/* Categories Scroll Section */}
@@ -163,6 +181,7 @@ const TopBar: React.FC = () => {
           onClick={() => handleScroll("right")}
         />
       </div>
+      <ToastContainer />
     </div>
   );
 };

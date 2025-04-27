@@ -28,11 +28,13 @@ import { toast, ToastContainer } from "react-toastify";
   }
 
   const MultiStepForm = () => {
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [autoFilled, setAutoFilled] = useState(false);
     const [subCategories, setSubCategories] = useState<Subcategory[]>([]);
     const [subCategories2, setSubCategories2] = useState<Subcategory2[]>([]);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [formData, setFormData] = useState<FormData>({
       title: "",
       description: "",
@@ -178,29 +180,32 @@ import { toast, ToastContainer } from "react-toastify";
         setAutoFilled(false);
       }
     };
-
     const handleSubmit = async () => {
+      setLoading(true); // Start loading
+      
       // Get user's location
       if (!navigator.geolocation) {
         console.error("Geolocation is not supported by this browser.");
+        setLoading(false); // Stop loading on error
+        toast.error("Geolocation is not supported by your browser");
         return;
       }
-
+    
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-        console.log("Latitude:", latitude, "Longitude:", longitude); // Log the coordinates
-
+        console.log("Latitude:", latitude, "Longitude:", longitude);
+    
         const formDataToSend = new FormData();
         const locationData = {
           type: "Point",
-          coordinates: [longitude, latitude] // Ensure correct order
+          coordinates: [longitude, latitude]
         };
-
+    
         formDataToSend.append("data", JSON.stringify({ ...formData, location: locationData }));
         formData.images.forEach((file) => {
           formDataToSend.append("file", file);
         });
-
+    
         try {
           const response = await axios.post("/api/create-ad", formDataToSend, {
             headers: {
@@ -208,16 +213,20 @@ import { toast, ToastContainer } from "react-toastify";
             },
           });
           toast.success("Ad created successfully!");
-          router.push("/"); // Redirect to My Ads page
+          router.push("/");
           console.log("Ad created successfully:", response.data);
         } catch (error) {
           console.error("Error creating ad:", error);
+          toast.error("Failed to create ad");
+        } finally {
+          setLoading(false); // Stop loading in any case
         }
       }, (error) => {
         console.error("Error getting location:", error);
+        toast.error("Failed to get your location");
+        setLoading(false); // Stop loading on error
       });
     };
-    
     const handleTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const { name, value } = e.target;
       setFormData({
@@ -513,43 +522,70 @@ import { toast, ToastContainer } from "react-toastify";
             <h2 className="font-bold text-2xl mb-4">Review and Submit</h2>
 
             {/* Image Carousel */}
-            {formData.images.length > 0 && (
-              <div className="relative w-full max-w-2xl mx-auto overflow-hidden rounded-lg">
-                <div className="flex transition-transform duration-300 ease-in-out">
-                  {formData.images.map((file, index) => (
-                    <div key={index} className="w-full flex-shrink-0 rounded-lg">
-                      <Image
-                        src={URL.createObjectURL(file)}
-                        alt={`Uploaded Image ${index + 1}`}
-                        width={800}
-                        height={600}
-                        className="w-full h-96 object-cover rounded-lg"
-                      />
-                    </div>
-                  ))}
-                </div>
-                {formData.images.length > 1 && (
-                  <>
-                    <button
-                      className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/50 p-2 rounded-full hover:bg-white/80 transition"
-                      onClick={() => {
-                        /* Add carousel navigation logic */
-                      }}
-                    >
-                      &lt;
-                    </button>
-                    <button
-                      className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/50 p-2 rounded-full hover:bg-white/80 transition"
-                      onClick={() => {
-                        /* Add carousel navigation logic */
-                      }}
-                    >
-                      &gt;
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
+           {formData.images.length > 0 && (
+  <div className="relative w-full max-w-2xl mx-auto overflow-hidden rounded-lg">
+    <div 
+      className="flex transition-transform duration-300 ease-in-out"
+      style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+    >
+      {formData.images.map((file, index) => (
+        <div key={index} className="w-full flex-shrink-0 rounded-lg">
+          <Image
+            src={URL.createObjectURL(file)}
+            alt={`Uploaded Image ${index + 1}`}
+            width={800}
+            height={600}
+            className="w-full h-96 object-cover rounded-lg"
+          />
+        </div>
+      ))}
+    </div>
+    
+    {formData.images.length > 1 && (
+      <>
+        <button
+          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-blue-500 px-3 py-1.5  rounded-full text-white hover:bg-blue-400 transition"
+          onClick={(e) => {
+            e.stopPropagation();
+            setCurrentImageIndex(prev => 
+              prev === 0 ? formData.images.length - 1 : prev - 1
+            );
+          }}
+        >
+          &lt;
+        </button>
+        <button
+          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-blue-500 px-3 py-1.5 rounded-full text-white hover:bg-blue-400 transition"
+          onClick={(e) => {
+            e.stopPropagation();
+            setCurrentImageIndex(prev => 
+              prev === formData.images.length - 1 ? 0 : prev + 1
+            );
+          }}
+        >
+          &gt;
+        </button>
+        
+        {/* Image indicators */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {formData.images.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index === currentImageIndex ? 'bg-blue-500' : 'bg-blue-50'
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentImageIndex(index);
+              }}
+              aria-label={`Go to image ${index + 1}`}
+            />
+          ))}
+        </div>
+      </>
+    )}
+  </div>
+)}
 
             {/* Details Section in Single Column */}
             <div className="space-y-6 max-w-2xl mx-auto">

@@ -76,6 +76,7 @@ const Step2: React.FC<Step2Props> = ({  onContinue }) => {
         </button>
       </div>
     </div>
+    //new
   );
 };
 

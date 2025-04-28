@@ -3,6 +3,7 @@ import ThemeSwitch from '../ThemeSwitch';
 import { FIcon, IIcon, XIcon } from '../Icons';
 import Image from 'next/image';
 import { FaHeart as HeartIcon } from 'react-icons/fa';
+import Link from 'next/link';
 
 const Footer: React.FC = () => {
     return (
@@ -22,12 +23,12 @@ const Footer: React.FC = () => {
 
 
                 <div className="flex flex-wrap justify-center space-x-4">
-                    <a href="/" className="no-underline text-[#1f41bb]">Home</a>
-                    <a href="/Footer/about" className="no-underline text-[#1f41bb]">About</a>
-                    <a href="/Footer/locations" className="no-underline text-[#1f41bb]">Locations</a>
-                    <a href="/Footer/terms" className="no-underline text-[#1f41bb]">Terms of Use</a>
-                    <a href="/Footer/contact" className="no-underline text-[#1f41bb]">Contact Us</a>
-                    <a href="/Footer/careers" className="no-underline text-[#1f41bb]">Careers</a>
+                    <Link href="/" className="no-underline text-[#1f41bb]">Home</Link>
+                    <Link href="/Footer/about" className="no-underline text-[#1f41bb]">About</Link>
+                    <Link href="/Footer/locations" className="no-underline text-[#1f41bb]">Locations</Link>
+                    <Link href="/Footer/terms" className="no-underline text-[#1f41bb]">Terms of Use</Link>
+                    <Link href="/Footer/contact" className="no-underline text-[#1f41bb]">Contact Us</Link>
+                    <Link href="/Footer/careers" className="no-underline text-[#1f41bb]">Careers</Link>
                 </div>
 
 

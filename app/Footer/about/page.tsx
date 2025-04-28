@@ -18,13 +18,13 @@ const page = () => {
               <div className="prose prose-lg max-w-none text-gray-600">
                 <p>
                   Klassifies.com is a completely free classified ads platform designed to make buying and selling effortless. 
-                  Whether you're looking for cars, jobs, real estate, or anything else, our platform connects you with 
+                  Whether you&apos;re looking for cars, jobs, real estate, or anything else, our platform connects you with 
                   exactly what you need - no strings attached.
                 </p>
                 
                 <div className="my-8 border-l-4 border-blue-500 pl-6">
                   <p className="font-semibold text-gray-800 italic">
-                    "Our mission is to create the simplest, most trustworthy classifieds experience - 100% free for everyone."
+                  &quot;Our mission is to create the simplest, most trustworthy classifieds experience - 100% free for everyone.&quot;
                   </p>
                 </div>
                 

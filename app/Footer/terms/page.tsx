@@ -162,7 +162,7 @@ const page = () => {
             <p className="text-gray-700 mb-2 leading-relaxed">
               <strong>10.1.</strong> You agree to indemnify and hold [Your
               Company] harmless from any claims, demands, liabilities, damages, or
-              expenses (including attorneys' fees) arising from your use of the
+              expenses (including attorneys&apos; fees) arising from your use of the
               Website, your violation of these terms, or your violation of any
               rights of a third party.
             </p>

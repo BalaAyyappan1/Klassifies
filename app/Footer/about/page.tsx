@@ -4,7 +4,7 @@ import React from 'react'
 const page = () => {
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-[#181818] py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl ">
           <div className=" overflow-hidden">
             {/* Hero Section */}
@@ -15,7 +15,7 @@ const page = () => {
             
             {/* Main Content */}
             <div className="mt-10">
-              <div className="prose prose-lg max-w-none text-gray-600">
+              <div className="prose prose-lg max-w-none text-gray-600 bg:white">
                 <p>
                   Klassifies.com is a completely free classified ads platform designed to make buying and selling effortless. 
                   Whether you&apos;re looking for cars, jobs, real estate, or anything else, our platform connects you with 
@@ -23,7 +23,7 @@ const page = () => {
                 </p>
                 
                 <div className="my-8 border-l-4 border-blue-500 pl-6">
-                  <p className="font-semibold text-gray-800 italic">
+                  <p className="font-semibold text-gray-800 dark:text-white italic">
                   &quot;Our mission is to create the simplest, most trustworthy classifieds experience - 100% free for everyone.&quot;
                   </p>
                 </div>

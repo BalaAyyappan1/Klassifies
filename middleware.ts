@@ -6,7 +6,7 @@ export async function middleware(req: NextRequest) {
   console.log(`[Middleware] Request received for: ${pathname}`);
 
   // Define route categories
-  const protectedRoutes = ["/employee"];
+  const protectedRoutes = ["/employee", "/admin"];
   const adminRoutes = ["/ad"];
   const authPages = ["/auth/signin", "/auth/signup"];
 

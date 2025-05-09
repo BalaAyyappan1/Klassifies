@@ -8,7 +8,8 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiArrowRight, FiArrowLeft, FiExternalLink } from 'react-icons/fi'
 import { FaSearch, FaAd, FaComments } from 'react-icons/fa'
-
+import { useRouter } from "next/navigation";
+import LabelInput from '@/components/ReusableComponents/LabelInput';
 interface ActionCardProps {
   icon: React.ReactNode;
   title: string;
@@ -39,12 +40,14 @@ interface AdType {
 }
 
 const Page = () => {
+    const router = useRouter();
+
   const [ads, setAds] = useState<AdType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [direction, setDirection] = useState<'left'|'right'>('right');
-
+const [searchBar, setSearchBar] = useState("");
   const fetchAds = async () => {
     try {
       setLoading(true);
@@ -128,6 +131,16 @@ const Page = () => {
     })
   };
 
+
+    const handleSearch = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (searchBar.trim() !== "") {
+        // Navigate to search results page with the search query
+        router.push(`/search?q=${encodeURIComponent(searchBar)}`);
+      }
+    };
+  
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900">
       <Layout>
@@ -137,6 +150,24 @@ const Page = () => {
         <div className="container mx-auto px-4 py-8">
           <main className="space-y-16">
             {/* Hero Section */}
+                    <form onSubmit={handleSearch} className="relative  w-full max-w-md flex-grow sm:hidden md:hidden">
+                      <LabelInput
+                        type="text"
+                        placeholder="Search by title, city, or state..."
+                        value={searchBar}
+                        onChange={(e) => setSearchBar(e.target.value)}
+                        labelText={""}
+                        htmlFor={""}
+                        className="w-full"
+                      />
+                      <button 
+                        type="submit" 
+                        className="absolute right-0 top-[26px] transform -translate-y-1/2 bg-blue-800 p-[0.64rem] rounded-tr rounded-br"
+                      >
+                        <FaSearch className="text-white" />
+                      </button>
+                    </form>
+            
             <motion.section 
               className="bg-gradient-to-r from-blue-700 to-blue-900 rounded-2xl shadow-2xl text-white py-16 px-6 text-center overflow-hidden relative"
               initial={{ opacity: 0 }}

@@ -58,7 +58,7 @@ const HomePageVideo = () => {
 
     // Validate link format if provided
     if (videoLink && !isValidUrl(videoLink)) {
-      toast.error('Please enter a valid URL (e.g., https://google.com)');
+      toast.error('Please enter a valid URL (e.g., https://www.google.com)');
       return;
     }
 

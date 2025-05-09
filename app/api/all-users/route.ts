@@ -6,20 +6,19 @@ import Ad from '@/models/ad';
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
-
     const { searchParams } = new URL(req.url);
     const role = searchParams.get('role');
 
+    console.log("Received role param:", role);
+
     if (!role || (role !== 'user' && role !== 'employee' && role !== 'admin')) {
+      console.log("Invalid role:", role);
       return NextResponse.json({ error: 'Invalid role specified' }, { status: 400 });
     }
 
-    // Get users with their basic info
-    const users = await User.find({ role: role })
-      .select('-password')
-      .lean();
+    const users = await User.find({ role: role }).select('-password').lean();
+    console.log("Users found:", users.length);
 
-    // Get ads for each user
     const usersWithAds = await Promise.all(
       users.map(async (user) => {
         const ads = await Ad.find({ userId: user._id })
@@ -30,7 +29,7 @@ export async function GET(req: NextRequest) {
         return {
           ...user,
           ads: ads || [],
-          adsCount: ads.length
+          adsCount: ads.length,
         };
       })
     );
@@ -38,10 +37,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(usersWithAds);
   } catch (error) {
     console.error('Error fetching users with ads:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' }, 
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 

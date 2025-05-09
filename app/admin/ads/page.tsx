@@ -153,7 +153,16 @@ const Page = () => {
     >
       {ad.status}
     </span>,
-    new Date(ad.createdAd).toLocaleDateString(),
+new Date(ad.createdAd).toLocaleString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: true 
+})
+    ,
     <select
       key={`actions-${ad._id}`}
       value={ad.status}

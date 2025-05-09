@@ -31,7 +31,11 @@ const Page = () => {
     try {
       setLoading(true);
       const response = await fetch('/api/all-users?role=user&includeAds=true');
+      console.log('response', response.status);
+      console.log('response', response.formData);
+
       if (!response.ok) throw new Error('Failed to fetch users');
+      
       const data = await response.json();
       setUsers(data);
     } catch (err) {
@@ -47,7 +51,7 @@ const Page = () => {
 
   const toggleBlockStatus = async (userId: string, currentStatus: boolean) => {
     try {
-      const response = await fetch('/api/all-users', {
+      const response = await fetch('api/all-users', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

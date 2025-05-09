@@ -85,9 +85,10 @@ export async function sendEmailOtp(email: string, otp: string, name: string) {
         </p>
       </div>
       <div class="footer">
-        <p>If you didn’t request this OTP, please ignore this email or contact our support team immediately.</p>
-        <p>Thank you for using Klassifies!</p>
-        <p>Best regards,<br />The Klassifies Team</p>
+       <p>If you didn’t request this OTP, please ignore this email or contact our support team immediately.</p>
+  <p>Need help? <a href="https://klassifies.com/Footer/contact" style="color: #1e3a8a; text-decoration: underline;">Contact Us</a></p>
+  <p>Thank you for using Klassifies!</p>
+  <p>Best regards,<br />The Klassifies Team</p>
       </div>
     </div>
   </body>

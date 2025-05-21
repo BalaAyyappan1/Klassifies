@@ -180,53 +180,139 @@ import { toast, ToastContainer } from "react-toastify";
         setAutoFilled(false);
       }
     };
-    const handleSubmit = async () => {
-      setLoading(true); // Start loading
+    // const handleSubmit = async () => {
+    //   setLoading(true); // Start loading
       
-      // Get user's location
-      if (!navigator.geolocation) {
-        console.error("Geolocation is not supported by this browser.");
-        setLoading(false); // Stop loading on error
-        toast.error("Geolocation is not supported by your browser");
-        return;
-      }
+    //   // Get user's location
+    //   if (!navigator.geolocation) {
+    //     console.error("Geolocation is not supported by this browser.");
+    //     setLoading(false); // Stop loading on error
+    //     toast.error("Geolocation is not supported by your browser");
+    //     return;
+    //   }
     
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        console.log("Latitude:", latitude, "Longitude:", longitude);
+    //   navigator.geolocation.getCurrentPosition(async (position) => {
+    //     const { latitude, longitude } = position.coords;
+    //     console.log("Latitude:", latitude, "Longitude:", longitude);
     
-        const formDataToSend = new FormData();
-        const locationData = {
-          type: "Point",
-          coordinates: [longitude, latitude]
-        };
+    //     const formDataToSend = new FormData();
+    //     const locationData = {
+    //       type: "Point",
+    //       coordinates: [longitude, latitude]
+    //     };
     
-        formDataToSend.append("data", JSON.stringify({ ...formData, location: locationData }));
-        formData.images.forEach((file) => {
-          formDataToSend.append("file", file);
-        });
+    //     formDataToSend.append("data", JSON.stringify({ ...formData, location: locationData }));
+    //     formData.images.forEach((file) => {
+    //       formDataToSend.append("file", file);
+    //     });
     
-        try {
-          const response = await axios.post("/api/create-ad", formDataToSend, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          toast.success("Ad created successfully!");
-          router.push("/");
-          console.log("Ad created successfully:", response.data);
-        } catch (error) {
-          console.error("Error creating ad:", error);
-          toast.error("Failed to create ad");
-        } finally {
-          setLoading(false); // Stop loading in any case
-        }
-      }, (error) => {
-        console.error("Error getting location:", error);
-        toast.error("Failed to get your location");
-        setLoading(false); // Stop loading on error
+    //     try {
+    //       const response = await axios.post("/api/create-ad", formDataToSend, {
+    //         headers: {
+    //           "Content-Type": "multipart/form-data",
+    //         },
+    //       });
+    //       toast.success("Ad created successfully!");
+    //       router.push("/");
+    //       console.log("Ad created successfully:", response.data);
+    //     } catch (error) {
+    //       console.error("Error creating ad:", error);
+    //       toast.error("Failed to create ad");
+    //     } finally {
+    //       setLoading(false); // Stop loading in any case
+    //     }
+    //   }, (error) => {
+    //     console.error("Error getting location:", error);
+    //     toast.error("Failed to get your location");
+    //     setLoading(false); // Stop loading on error
+    //   });
+    // };
+
+
+    const handleSubmit = async () => {
+  setLoading(true); // Start loading
+  
+  // Check if we're on a secure context (HTTPS) - required for Safari
+  if (window.location.protocol !== 'https:' && !window.location.hostname.includes('localhost')) {
+    console.error("Geolocation requires HTTPS");
+    toast.error("Geolocation requires a secure connection (HTTPS)");
+    setLoading(false);
+    return;
+  }
+  
+  // Check if geolocation is supported
+  if (!navigator.geolocation) {
+    console.error("Geolocation is not supported by this browser.");
+    setLoading(false); // Stop loading on error
+    toast.error("Geolocation is not supported by your browser");
+    return;
+  }
+
+  // Options for geolocation (these help with Safari)
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 10000, // 10 seconds
+    maximumAge: 0 // Don't use cached position
+  };
+  
+  // Get user's location
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const { latitude, longitude } = position.coords;
+      console.log("Latitude:", latitude, "Longitude:", longitude);
+      
+      const formDataToSend = new FormData();
+      const locationData = {
+        type: "Point",
+        coordinates: [longitude, latitude]
+      };
+      
+      formDataToSend.append("data", JSON.stringify({ ...formData, location: locationData }));
+      
+      formData.images.forEach((file) => {
+        formDataToSend.append("file", file);
       });
-    };
+      
+      try {
+        const response = await axios.post("/api/create-ad", formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        
+        toast.success("Ad created successfully!");
+        router.push("/");
+        console.log("Ad created successfully:", response.data);
+      } catch (error) {
+        console.error("Error creating ad:", error);
+        toast.error("Failed to create ad");
+      } finally {
+        setLoading(false); // Stop loading in any case
+      }
+    },
+    (error) => {
+      // Handle specific geolocation errors for better user feedback
+      let errorMessage = "Failed to get your location";
+      
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          errorMessage = "Location permission was denied. Please enable location services.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          errorMessage = "Location information is unavailable. Please try again.";
+          break;
+        case error.TIMEOUT:
+          errorMessage = "Location request timed out. Please try again.";
+          break;
+      }
+      
+      console.error("Error getting location:", error);
+      toast.error(errorMessage);
+      setLoading(false); // Stop loading on error
+    },
+    options // Pass the options to help with Safari compatibility
+  );
+};
     const handleTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const { name, value } = e.target;
       setFormData({

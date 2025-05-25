@@ -5,6 +5,7 @@ import Ad from "@/models/ad";
 import User from "@/models/user";
 import { getFromR2 } from "@/lib/r2";
 
+
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
@@ -88,7 +89,7 @@ export async function POST(req: NextRequest) {
         showAllStates: ad.showAllStates,
         userProfile: {
           name: userProfile?.name,
-          profilePhoto: userProfile?.profile // Include user profile photo
+          profilePhoto: userProfile?.profile 
         }
       };
     }));

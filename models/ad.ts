@@ -8,7 +8,7 @@ const AdsSchema = new Schema<IAds>({
     description: { type: String, required: true },
     mainCategory: { type: Object, required: true }, // Change to ObjectId
     subCategory: { type: Object, required: true }, // Change to ObjectId
-    subCategory2: { type: Object, required: true }, // Change to ObjectId
+    subCategory2: { type: Object, required: false }, // Change to ObjectId
   
     images: [{ type: String, required: true }],
     mobile: { type: String, required: true },

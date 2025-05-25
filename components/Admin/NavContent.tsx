@@ -10,4 +10,5 @@ export const NavContents = [
     { href: "/admin/homepageads", text: "Home Page Ads", key: "homepageads" },
     { href: "/admin/topbar", text: "Top Bar", key: "profile" },
     { href: "/admin/videoads", text: "Video Ads", key: "videoads" },
+    { href: "/admin/bulk", text: "Bulk Ads", key: "bulk" },
 ];

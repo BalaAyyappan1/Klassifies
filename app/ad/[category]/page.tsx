@@ -62,11 +62,6 @@ const Page = () => {
   const params = useParams();
   const { category } = params;
   
-  // Move this up before any conditional logic
-  const selectedCategory = categoryData.mainCategories.find(
-    (cat) => slugify(cat.name) === category
-  );
-
   const [selectedSubcategory, setSelectedSubcategory] = useState<SubCategory | null>(null);
   const [selectedSubSubcategory, setSelectedSubSubcategory] = useState<SubSubcategory | null>(null);
   const [ads, setAds] = useState<Ad[]>([]);
@@ -83,6 +78,11 @@ const Page = () => {
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+
+  // Find selected category - moved after all state declarations
+  const selectedCategory = categoryData.mainCategories.find(
+    (cat) => slugify(cat.name) === category
+  );
 
   useEffect(() => {
     const authenticate = async () => {
@@ -156,95 +156,6 @@ const Page = () => {
     });
   }, []);
 
-  // Enhanced location toggle function
-  const toggleLocationFilter = async () => {
-    if (!isLocationEnabled) {
-      try {
-        const location = await getUserLocation();
-        setUserLocation(location);
-        setIsLocationEnabled(true);
-        setLocationError(null);
-        
-        // Refetch ads with location if a category is selected
-        if (selectedSubcategory) {
-          await fetchAds(
-            selectedSubcategory.name,
-            selectedSubSubcategory?.name || null,
-            location
-          );
-        }
-      } catch (error) {
-        setLocationError(error instanceof Error ? error.message : "Failed to get location");
-        setIsLocationEnabled(false);
-        setUserLocation(null);
-      }
-    } else {
-      setIsLocationEnabled(false);
-      setUserLocation(null);
-      setLocationError(null);
-      
-      // Refetch ads without location filter
-      if (selectedSubcategory) {
-        await fetchAds(selectedSubcategory.name, selectedSubSubcategory?.name || null);
-      }
-    }
-  };
-
-  // Enhanced radius change handler with debouncing
-  const handleRadiusChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newRadius = parseInt(e.target.value);
-      setRadius(newRadius);
-      
-      // Only refetch if location is enabled and we have both location and selected category
-      if (isLocationEnabled && userLocation && selectedSubcategory) {
-        await fetchAds(
-          selectedSubcategory.name,
-          selectedSubSubcategory?.name || null,
-          userLocation
-        );
-      }
-    },
-    [isLocationEnabled, userLocation, selectedSubcategory, selectedSubSubcategory]
-  );
-
-  // Handle case when category is not found
-  if (!selectedCategory) {
-    return (
-      <Layout>
-        <div className="text-center mt-10">
-          <h2 className="text-xl font-bold">Category Not Found</h2>
-          <p className="text-gray-600">
-            The category you are looking for does not exist. Please check the
-            URL or return to the homepage.
-          </p>
-        </div>
-      </Layout>
-    );
-  }
-
-  const handleSubcategoryClick = async (subcategory: SubCategory) => {
-    setSelectedSubcategory(subcategory);
-    setSelectedSubSubcategory(null);
-    
-    await fetchAds(
-      subcategory.name,
-      null,
-      isLocationEnabled ? userLocation : undefined
-    );
-  };
-
-  const handleSubSubcategoryClick = async (subSubcategory: SubSubcategory) => {
-    setSelectedSubSubcategory(subSubcategory);
-    if (selectedSubcategory?.name) {
-      await fetchAds(
-        selectedSubcategory.name,
-        subSubcategory.name,
-        isLocationEnabled ? userLocation : undefined
-      );
-    }
-  };
-
   // Enhanced fetchAds function with better error handling and location support
   const fetchAds = useCallback(async (
     subCategoryName: string,
@@ -309,6 +220,80 @@ const Page = () => {
     }
   }, [selectedCategory, isLocationEnabled, radius]);
 
+  // Enhanced location toggle function
+  const toggleLocationFilter = useCallback(async () => {
+    if (!isLocationEnabled) {
+      try {
+        const location = await getUserLocation();
+        setUserLocation(location);
+        setIsLocationEnabled(true);
+        setLocationError(null);
+        
+        // Refetch ads with location if a category is selected
+        if (selectedSubcategory) {
+          await fetchAds(
+            selectedSubcategory.name,
+            selectedSubSubcategory?.name || null,
+            location
+          );
+        }
+      } catch (error) {
+        setLocationError(error instanceof Error ? error.message : "Failed to get location");
+        setIsLocationEnabled(false);
+        setUserLocation(null);
+      }
+    } else {
+      setIsLocationEnabled(false);
+      setUserLocation(null);
+      setLocationError(null);
+      
+      // Refetch ads without location filter
+      if (selectedSubcategory) {
+        await fetchAds(selectedSubcategory.name, selectedSubSubcategory?.name || null);
+      }
+    }
+  }, [getUserLocation, selectedSubcategory, selectedSubSubcategory, fetchAds, isLocationEnabled]);
+
+  // Enhanced radius change handler with debouncing
+  const handleRadiusChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newRadius = parseInt(e.target.value);
+      setRadius(newRadius);
+      
+      // Only refetch if location is enabled and we have both location and selected category
+      if (isLocationEnabled && userLocation && selectedSubcategory) {
+        await fetchAds(
+          selectedSubcategory.name,
+          selectedSubSubcategory?.name || null,
+          userLocation
+        );
+      }
+    },
+    [isLocationEnabled, userLocation, selectedSubcategory, selectedSubSubcategory, fetchAds]
+  );
+
+  const handleSubcategoryClick = useCallback(async (subcategory: SubCategory) => {
+    setSelectedSubcategory(subcategory);
+    setSelectedSubSubcategory(null);
+    
+    await fetchAds(
+      subcategory.name,
+      null,
+      isLocationEnabled ? userLocation : undefined
+    );
+  }, [fetchAds, isLocationEnabled, userLocation]);
+
+  const handleSubSubcategoryClick = useCallback(async (subSubcategory: SubSubcategory) => {
+    setSelectedSubSubcategory(subSubcategory);
+    if (selectedSubcategory?.name) {
+      await fetchAds(
+        selectedSubcategory.name,
+        subSubcategory.name,
+        isLocationEnabled ? userLocation : undefined
+      );
+    }
+  }, [fetchAds, selectedSubcategory, isLocationEnabled, userLocation]);
+
   // Utility function to format time ago
   const timeAgo = (date: string) => {
     const seconds = Math.floor(
@@ -364,6 +349,21 @@ const Page = () => {
         (selectedAd?.images.length || 1)
     );
   };
+
+  // Handle case when category is not found - moved after all hooks
+  if (!selectedCategory) {
+    return (
+      <Layout>
+        <div className="text-center mt-10">
+          <h2 className="text-xl font-bold">Category Not Found</h2>
+          <p className="text-gray-600">
+            The category you are looking for does not exist. Please check the
+            URL or return to the homepage.
+          </p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <div>

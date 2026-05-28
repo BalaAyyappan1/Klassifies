@@ -1,6 +1,10 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Klassifies
+
+Klassifies is a modern classified listings platform built with Next.js that allows users to create, browse, and manage listings across multiple categories through a fast and responsive interface.
+
+The platform includes features such as user authentication, listing management, search and filtering, image uploads, location-based listings, profile management, and admin support.
+
 
 First, run the development server:
 
